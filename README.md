@@ -39,7 +39,6 @@ $ npm run build:linux
   - [x] QR Code Login
   - [x] Verify Login State
   - [x] Get room id
-- [ ] Working towards
   - [x] Get area list
   - [x] Allow user to pick the area list
   - [x] Stream title input
@@ -50,8 +49,12 @@ $ npm run build:linux
   - [x] End stream
   - [x] Get stream address
   - [x] Get stream key
-  - [ ] Get room info
-  - [ ] Display room info
+  - [X] Get room info
+  - [X] Display room info
+  - [x] Display face recognition address
+- [ ] Working towards
+  - [ ] Styling
+
 
 ### Reference
 [Bilibili API Collect Documentation](https://socialsisteryi.github.io/bilibili-API-collect/)

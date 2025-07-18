@@ -9,6 +9,7 @@ import TableComponent from './components/TableComponent'
 
 function App() {
   const [qrData, setQrData] = useState(null)
+  const [showQRModal, setShowQRModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [roomId, setRoomId] = useState(null)
@@ -71,11 +72,11 @@ function App() {
 
   const getLoginQRCode = async () => {
     setLoading(true)
-
     try {
       const data = await window.api.getLoginQRCode()
       setQrData(data)
       setIsLoggedIn(false)
+      setShowQRModal(true)
     } catch (error) {
       console.error(error)
     } finally {
@@ -208,40 +209,60 @@ function App() {
 
   return (
     <div className="flex flex-col items-start justify-start min-h-screen bg-gray-100 p-6">
-      <div className="flex items-center space-x-2">
-        <AreaList selectedArea={selectedArea} onAreaChange={handleAreaChange} />
-        <StreamTitle title={streamTitle} onTitleChange={handleStreamTitleChange} />
-        <UpdateStream
-          room_id={roomId}
-          title={streamTitle}
-          area_name={selectedArea?.name}
-          area_id={selectedArea?.id}
-          sessdata={sessdata}
-          csrf={csrf}
-          setLiveStreamArea={setLiveStreamArea}
-          setLiveStreamTitle={setLiveStreamTitle}
-        />
-        <StartStream
-          room_id={roomId}
-          area_v2={selectedArea?.id}
-          platform={platform}
-          sessdata={sessdata}
-          csrf={csrf}
-          setStreamAddress={setStreamAddress}
-          setStreamKey={setStreamKey}
-          setLiveStreamStatus={setLiveStreamStatus}
-          setFaceRecognitionAddress={setFaceRecognitionAddress}
-        />
+      <div className="flex items-center space-x-2 w-full">
+        <div className="flex-grow flex items-center space-x-2">
+          <AreaList selectedArea={selectedArea} onAreaChange={handleAreaChange} />
+          <StreamTitle title={streamTitle} onTitleChange={handleStreamTitleChange} />
+          <UpdateStream
+            room_id={roomId}
+            title={streamTitle}
+            area_name={selectedArea?.name}
+            area_id={selectedArea?.id}
+            sessdata={sessdata}
+            csrf={csrf}
+            setLiveStreamArea={setLiveStreamArea}
+            setLiveStreamTitle={setLiveStreamTitle}
+          />
+          <StartStream
+            room_id={roomId}
+            area_v2={selectedArea?.id}
+            platform={platform}
+            sessdata={sessdata}
+            csrf={csrf}
+            setStreamAddress={setStreamAddress}
+            setStreamKey={setStreamKey}
+            setLiveStreamStatus={setLiveStreamStatus}
+            setFaceRecognitionAddress={setFaceRecognitionAddress}
+          />
+          <EndStream
+            room_id={roomId}
+            platform={platform}
+            sessdata={sessdata}
+            csrf={csrf}
+            setStreamAddress={setStreamAddress}
+            setStreamKey={setStreamKey}
+            setLiveStreamStatus={setLiveStreamStatus}
+          />
+        </div>
 
-        <EndStream
-          room_id={roomId}
-          platform={platform}
-          sessdata={sessdata}
-          csrf={csrf}
-          setStreamAddress={setStreamAddress}
-          setStreamKey={setStreamKey}
-          setLiveStreamStatus={setLiveStreamStatus}
-        />
+        <div>
+          {!isLoggedIn ? (
+            <button
+              onClick={getLoginQRCode}
+              disabled={loading}
+              className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 text-sm"
+            >
+              {loading ? 'Loading...' : '二维码登录'}
+            </button>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="p-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm"
+            >
+              退出登录
+            </button>
+          )}
+        </div>
       </div>
 
       <TableComponent
@@ -262,26 +283,19 @@ function App() {
         faceRecognitionAddress={faceRecognitionAddress}
       />
 
-      {!isLoggedIn ? (
-        <button
-          onClick={getLoginQRCode}
-          disabled={loading}
-          className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? 'Loading...' : '二维码登录'}
-        </button>
-      ) : (
-        <button
-          onClick={handleLogout}
-          className="mt-4 px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700"
-        >
-          退出登录
-        </button>
-      )}
-
-      {qrData?.data?.url && !isLoggedIn && (
-        <div className="mt-4 bg-white rounded shadow">
-          <QRCode value={qrData.data.url} size={256} />
+      {showQRModal && qrData?.data?.url && !isLoggedIn && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-xl text-center">
+            <h2 className="text-lg mb-4 font-medium">扫码登录</h2>
+            <QRCode value={qrData.data.url} size={256} />
+            <p className="text-sm mt-2">{qrStatus}</p>
+            <button
+              onClick={() => setShowQRModal(false)}
+              className="mt-4 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            >
+              关闭
+            </button>
+          </div>
         </div>
       )}
     </div>
