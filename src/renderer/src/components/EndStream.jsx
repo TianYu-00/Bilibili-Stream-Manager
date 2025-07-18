@@ -1,6 +1,14 @@
 import React, { useState } from 'react'
 
-export default function EndStream({ room_id, platform, sessdata, csrf }) {
+export default function EndStream({
+  room_id,
+  platform,
+  sessdata,
+  csrf,
+  setStreamAddress,
+  setStreamKey,
+  setLiveStreamStatus
+}) {
   const [status, setStatus] = useState('idle') // idle | loading | success
 
   const handleEndClick = async () => {
@@ -16,6 +24,9 @@ export default function EndStream({ room_id, platform, sessdata, csrf }) {
       console.log(response)
       if (response.code === 0) {
         setStatus('success')
+        setStreamAddress('')
+        setStreamKey('')
+        setLiveStreamStatus('未开播')
         setTimeout(() => setStatus('idle'), 2000)
       } else {
         console.error('End failed:', response.message || response.msg || response)

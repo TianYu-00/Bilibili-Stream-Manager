@@ -30,6 +30,10 @@ function App() {
   })
   const [streamAddress, setStreamAddress] = useState('')
   const [streamKey, setStreamKey] = useState('')
+  const [liveStreamArea, setLiveStreamArea] = useState(null)
+  const [liveStreamTitle, setLiveStreamTitle] = useState('')
+  const [liveStreamStatus, setLiveStreamStatus] = useState('')
+  const [faceRecognitionAddress, setFaceRecognitionAddress] = useState('')
 
   const intervalRef = useRef(null)
 
@@ -57,6 +61,12 @@ function App() {
     setMid('')
     setRoomId(null)
     setUsername('')
+    setLiveStreamArea(null)
+    setLiveStreamTitle('')
+    setLiveStreamStatus('未知')
+    setFaceRecognitionAddress('')
+    setStreamAddress('')
+    setStreamKey('')
   }
 
   const getLoginQRCode = async () => {
@@ -147,6 +157,31 @@ function App() {
     localStorage.setItem('STREAM_TITLE', newTitle)
   }
 
+  const getRoomInfo = async (room_id) => {
+    try {
+      const response = await window.api.getRoomInfo(room_id)
+      console.log(response.data)
+      setLiveStreamArea({ id: response.data.area_id, name: response.data.area_name })
+      setLiveStreamTitle(response.data.title)
+
+      switch (response.data.live_status) {
+        case 0:
+          setLiveStreamStatus('未开播')
+          break
+        case 1:
+          setLiveStreamStatus('直播中')
+          break
+        case 2:
+          setLiveStreamStatus('轮播中')
+          break
+        default:
+          setLiveStreamStatus('未知')
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   // Auto verify on session load
   useEffect(() => {
     if (sessdata && csrf && !isLoggedIn) {
@@ -166,6 +201,10 @@ function App() {
     if (mid && isLoggedIn) getRoomIdByUID(mid)
   }, [mid, isLoggedIn])
 
+  useEffect(() => {
+    if (roomId) getRoomInfo(roomId)
+  }, [roomId])
+
   return (
     <div className="flex flex-col items-start justify-start min-h-screen bg-gray-100 p-6">
       <div className="flex items-center space-x-2">
@@ -174,9 +213,12 @@ function App() {
         <UpdateStream
           room_id={roomId}
           title={streamTitle}
+          area_name={selectedArea?.name}
           area_id={selectedArea?.id}
           sessdata={sessdata}
           csrf={csrf}
+          setLiveStreamArea={setLiveStreamArea}
+          setLiveStreamTitle={setLiveStreamTitle}
         />
         <StartStream
           room_id={roomId}
@@ -186,9 +228,19 @@ function App() {
           csrf={csrf}
           setStreamAddress={setStreamAddress}
           setStreamKey={setStreamKey}
+          setLiveStreamStatus={setLiveStreamStatus}
+          setFaceRecognitionAddress={setFaceRecognitionAddress}
         />
 
-        <EndStream room_id={roomId} platform={platform} sessdata={sessdata} csrf={csrf} />
+        <EndStream
+          room_id={roomId}
+          platform={platform}
+          sessdata={sessdata}
+          csrf={csrf}
+          setStreamAddress={setStreamAddress}
+          setStreamKey={setStreamKey}
+          setLiveStreamStatus={setLiveStreamStatus}
+        />
       </div>
 
       <TableComponent
@@ -199,12 +251,14 @@ function App() {
         username={username}
         isLoggedIn={isLoggedIn}
         room_id={roomId}
-        title={streamTitle}
-        area_name={selectedArea?.name}
-        area_id={selectedArea?.id}
+        title={liveStreamTitle}
+        area_name={liveStreamArea?.name}
+        area_id={liveStreamArea?.id}
         platform={platform}
         stream_address={streamAddress}
         stream_key={streamKey}
+        live_status={liveStreamStatus}
+        faceRecognitionAddress={faceRecognitionAddress}
       />
 
       {!isLoggedIn ? (

@@ -1,6 +1,15 @@
 import React, { useState } from 'react'
 
-export default function UpdateStream({ room_id, title, area_id, sessdata, csrf }) {
+export default function UpdateStream({
+  room_id,
+  title,
+  area_id,
+  area_name,
+  sessdata,
+  csrf,
+  setLiveStreamArea,
+  setLiveStreamTitle
+}) {
   const [status, setStatus] = useState('idle') // idle | loading | success
 
   const handleUpdateClick = async () => {
@@ -15,8 +24,12 @@ export default function UpdateStream({ room_id, title, area_id, sessdata, csrf }
         csrf
       })
 
+      console.log(response.data)
+
       if (response.code === 0) {
         setStatus('success')
+        setLiveStreamArea({ id: area_id, name: area_name })
+        setLiveStreamTitle(title)
         setTimeout(() => setStatus('idle'), 2000)
       } else {
         console.error('Update failed:', response.msg || response)

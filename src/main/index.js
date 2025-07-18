@@ -10,7 +10,8 @@ import {
   GetAreaList,
   StartLiveStream,
   UpdateStreamInfo,
-  EndLiveStream
+  EndLiveStream,
+  GetRoomInfo
 } from './api'
 
 function createWindow() {
@@ -95,6 +96,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('end-live-stream', async (_, { room_id, platform, sessdata, csrf }) => {
     return await EndLiveStream({ room_id, platform, sessdata, csrf })
+  })
+
+  ipcMain.handle('get-room-info', async (_, room_id) => {
+    return await GetRoomInfo(room_id)
   })
 
   createWindow()

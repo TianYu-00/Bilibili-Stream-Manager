@@ -50,6 +50,8 @@ $ npm run build:linux
   - [x] End stream
   - [x] Get stream address
   - [x] Get stream key
+  - [ ] Get room info
+  - [ ] Display room info
 
 ### Reference
 [Bilibili API Collect Documentation](https://socialsisteryi.github.io/bilibili-API-collect/)

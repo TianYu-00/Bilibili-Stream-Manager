@@ -13,10 +13,12 @@ export default function TableComponent({
   area_id,
   platform,
   stream_address,
-  stream_key
+  stream_key,
+  live_status,
+  faceRecognitionAddress
 }) {
   const accountData = [
-    { label: 'QR登录状态', value: qr_status, sensitive: false },
+    { label: '二维码登录状态', value: qr_status, sensitive: false },
     { label: '登录状态', value: isLoggedIn ? '已登录' : '未登录', sensitive: false },
     { label: '用户ID', value: uid, sensitive: false },
     { label: '用户名', value: username, sensitive: false },
@@ -25,13 +27,15 @@ export default function TableComponent({
   ]
 
   const streamData = [
+    { label: '直播间状态', value: live_status, sensitive: false },
     { label: '直播间ID', value: room_id, sensitive: false },
     { label: '直播间标题', value: title, sensitive: false },
     { label: '分区名字', value: area_name, sensitive: false },
     { label: '分区ID', value: area_id, sensitive: false },
     { label: '平台', value: platform, sensitive: false },
     { label: '推流地址', value: stream_address, sensitive: true },
-    { label: '推流码', value: stream_key, sensitive: true }
+    { label: '推流码', value: stream_key, sensitive: true },
+    { label: '人脸识别地址', value: faceRecognitionAddress, sensitive: true }
   ]
 
   const initialVisibility = {}
@@ -57,7 +61,7 @@ export default function TableComponent({
       <table className="table-auto w-full border-collapse border border-gray-300 text-sm">
         <thead className="bg-gray-100">
           <tr>
-            <th className="border px-4 py-2 text-left w-32">Key</th>
+            <th className="border px-4 py-2 text-left w-40">Key</th>
             <th className="border px-4 py-2 text-left">Value</th>
             <th className="border px-4 py-2 text-center w-20">Toggle</th>
           </tr>

@@ -23,6 +23,9 @@ https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/man
 
 EndStream
 https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/manage.md#%E5%85%B3%E9%97%AD%E7%9B%B4%E6%92%AD
+
+Get Room Info
+https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%BF%A1%E6%81%AF
 */
 
 // Get Login QR Code
@@ -201,5 +204,18 @@ export async function EndLiveStream({ room_id, platform, sessdata, csrf }) {
   } catch (error) {
     console.error(error)
     throw error
+  }
+}
+
+export async function GetRoomInfo(room_id) {
+  try {
+    const response = await axios.get('https://api.live.bilibili.com/room/v1/Room/get_info', {
+      params: { room_id }
+    })
+
+    console.log(response.data)
+    return response.data
+  } catch (error) {
+    console.error(error)
   }
 }

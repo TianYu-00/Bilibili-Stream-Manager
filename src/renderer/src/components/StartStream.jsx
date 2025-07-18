@@ -7,7 +7,9 @@ export default function StartStream({
   sessdata,
   csrf,
   setStreamAddress,
-  setStreamKey
+  setStreamKey,
+  setLiveStreamStatus,
+  setFaceRecognitionAddress
 }) {
   const [status, setStatus] = useState('idle') // idle | loading | success
 
@@ -33,7 +35,11 @@ export default function StartStream({
         setStatus('success')
         setStreamAddress(response.data?.rtmp?.addr)
         setStreamKey(response.data?.rtmp?.code)
+        setLiveStreamStatus('直播中')
         setTimeout(() => setStatus('idle'), 2000)
+      } else if (response.code === 60024) {
+        setFaceRecognitionAddress(response.data?.qr)
+        alert('请复制人脸识别地址到手机浏览器并进行人脸识别, 然后再尝试开播。')
       } else {
         console.error('Start failed:', response.msg || response)
         setStatus('idle')
