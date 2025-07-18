@@ -3,6 +3,7 @@ import QRCode from 'react-qr-code'
 import AreaList from './components/AreaList'
 import StreamTitle from './components/StreamTitle'
 import StartStream from './components/StartStream'
+import UpdateStream from './components/UpdateStream'
 
 function App() {
   const [qrData, setQrData] = useState(null)
@@ -195,6 +196,13 @@ function App() {
           room_id={roomId}
           area_v2={selectedAreaId}
           platform={platform}
+          sessdata={sessdata}
+          csrf={csrf}
+        />
+        <UpdateStream
+          room_id={roomId}
+          title={streamTitle}
+          area_id={selectedAreaId}
           sessdata={sessdata}
           csrf={csrf}
         />

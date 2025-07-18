@@ -8,7 +8,8 @@ import {
   VerifyLogin,
   GetRoomIdByUID,
   GetAreaList,
-  StartLiveStream
+  StartLiveStream,
+  UpdateStreamInfo
 } from './api'
 
 function createWindow() {
@@ -84,6 +85,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('start-live-stream', async (_, { room_id, area_v2, platform, sessdata, csrf }) => {
     return await StartLiveStream({ room_id, area_v2, platform, sessdata, csrf })
+  })
+
+  ipcMain.handle('update-stream-info', async (_, { room_id, title, area_id, sessdata, csrf }) => {
+    return await UpdateStreamInfo({ room_id, title, area_id, sessdata, csrf })
   })
 
   createWindow()
