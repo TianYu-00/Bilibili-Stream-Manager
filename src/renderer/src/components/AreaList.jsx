@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-export default function AreaList({ selectedAreaId, onAreaChange }) {
+export default function AreaList({ selectedArea, onAreaChange }) {
   const [areaList, setAreaList] = useState([])
 
   useEffect(() => {
@@ -19,13 +19,23 @@ export default function AreaList({ selectedAreaId, onAreaChange }) {
 
   const handleSelectChange = (e) => {
     const selectedId = e.target.value
-    onAreaChange(selectedId)
+    let selectedName = ''
+
+    for (const area of areaList) {
+      const found = area.list.find((child) => String(child.id) === selectedId)
+      if (found) {
+        selectedName = found.name
+        break
+      }
+    }
+
+    onAreaChange({ id: selectedId, name: selectedName })
   }
 
   return (
     <div>
       <label className="block mb-2">Area list:</label>
-      <select className="" onChange={handleSelectChange} value={selectedAreaId || ''}>
+      <select className="" onChange={handleSelectChange} value={selectedArea?.id || ''}>
         <option value="" disabled>
           -- Please select an area --
         </option>

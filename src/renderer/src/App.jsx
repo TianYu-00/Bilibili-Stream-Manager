@@ -5,6 +5,7 @@ import StreamTitle from './components/StreamTitle'
 import StartStream from './components/StartStream'
 import UpdateStream from './components/UpdateStream'
 import EndStream from './components/EndStream'
+import TableComponent from './components/TableComponent'
 
 function App() {
   const [qrData, setQrData] = useState(null)
@@ -18,7 +19,7 @@ function App() {
   const [mid, setMid] = useState(localStorage.getItem('MID') || '')
 
   const [platform, setPlatform] = useState('pc_link')
-  const [selectedAreaId, setSelectedAreaId] = useState(null)
+  const [selectedArea, setSelectedArea] = useState(null)
   const [streamTitle, setStreamTitle] = useState('')
 
   const intervalRef = useRef(null)
@@ -131,9 +132,10 @@ function App() {
     clearCredentials()
   }
 
-  const handleAreaChange = (id) => {
-    console.log('Area selected in App.jsx:', id)
-    setSelectedAreaId(id)
+  const handleAreaChange = ({ id, name }) => {
+    console.log('Selected Area ID:', id)
+    console.log('Selected Area Name:', name)
+    setSelectedArea({ id, name })
   }
 
   const handleStreamTitleChange = (newTitle) => {
@@ -162,6 +164,18 @@ function App() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+      <TableComponent
+        sessdata={sessdata}
+        csrf={csrf}
+        uid={mid}
+        isLoggedIn={isLoggedIn}
+        room_id={roomId}
+        title={streamTitle}
+        area_name={selectedArea?.name}
+        area_id={selectedArea?.id}
+        platform={platform}
+      />
+
       {!isLoggedIn ? (
         <button
           onClick={getLoginQRCode}
@@ -186,23 +200,18 @@ function App() {
       )}
 
       <div className="max-w-lg px-4">
-        {statusMessage && <p className="mt-4 break-words">{statusMessage}</p>}
-        {mid && <p className="mt-1 break-words">UID: {mid}</p>}
-        {sessdata && <p className="mt-1 break-words">SESSDATA: {sessdata}</p>}
-        {csrf && <p className="mt-1 break-words">CSRF: {csrf}</p>}
-        {roomId && <p className="mt-1 break-words">Room ID: {roomId}</p>}
-        <AreaList selectedAreaId={selectedAreaId} onAreaChange={handleAreaChange} />
+        <AreaList selectedArea={selectedArea} onAreaChange={handleAreaChange} />
         <StreamTitle title={streamTitle} onTitleChange={handleStreamTitleChange} />
         <UpdateStream
           room_id={roomId}
           title={streamTitle}
-          area_id={selectedAreaId}
+          area_id={selectedArea?.id}
           sessdata={sessdata}
           csrf={csrf}
         />
         <StartStream
           room_id={roomId}
-          area_v2={selectedAreaId}
+          area_v2={selectedArea?.id}
           platform={platform}
           sessdata={sessdata}
           csrf={csrf}
