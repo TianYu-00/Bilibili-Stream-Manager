@@ -43,11 +43,11 @@ $ npm run build:linux
   - [x] Get area list
   - [x] Allow user to pick the area list
   - [x] Stream title input
-  - [ ] Update Stream
+  - [x] Update Stream
   - [x] Start stream
-  - [ ] Generate stream server
-  - [ ] Generate stream key
-  - [ ] End stream
+  - [x] Generate stream server
+  - [x] Generate stream key
+  - [x] End stream
 
 ### Reference
 [Bilibili API Collect Documentation](https://socialsisteryi.github.io/bilibili-API-collect/)

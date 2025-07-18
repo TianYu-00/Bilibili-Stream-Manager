@@ -169,3 +169,29 @@ export async function StartLiveStream({ room_id, area_v2, platform, sessdata, cs
     throw error
   }
 }
+
+export async function EndLiveStream({ room_id, platform, sessdata, csrf }) {
+  try {
+    const formBody = new URLSearchParams({
+      room_id, // live room id
+      platform, // pc_link or android_link // web_link (deprecated)
+      csrf // csrf
+    }).toString()
+
+    const response = await axios.post(
+      'https://api.live.bilibili.com/room/v1/Room/stopLive',
+      formBody,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Cookie: `SESSDATA=${sessdata}; bili_jct=${csrf}`
+        }
+      }
+    )
+
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}

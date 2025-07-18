@@ -4,6 +4,7 @@ import AreaList from './components/AreaList'
 import StreamTitle from './components/StreamTitle'
 import StartStream from './components/StartStream'
 import UpdateStream from './components/UpdateStream'
+import EndStream from './components/EndStream'
 
 function App() {
   const [qrData, setQrData] = useState(null)
@@ -192,13 +193,6 @@ function App() {
         {roomId && <p className="mt-1 break-words">Room ID: {roomId}</p>}
         <AreaList selectedAreaId={selectedAreaId} onAreaChange={handleAreaChange} />
         <StreamTitle title={streamTitle} onTitleChange={handleStreamTitleChange} />
-        <StartStream
-          room_id={roomId}
-          area_v2={selectedAreaId}
-          platform={platform}
-          sessdata={sessdata}
-          csrf={csrf}
-        />
         <UpdateStream
           room_id={roomId}
           title={streamTitle}
@@ -206,6 +200,15 @@ function App() {
           sessdata={sessdata}
           csrf={csrf}
         />
+        <StartStream
+          room_id={roomId}
+          area_v2={selectedAreaId}
+          platform={platform}
+          sessdata={sessdata}
+          csrf={csrf}
+        />
+
+        <EndStream room_id={roomId} platform={platform} sessdata={sessdata} csrf={csrf} />
       </div>
     </div>
   )

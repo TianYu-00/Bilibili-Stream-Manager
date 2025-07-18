@@ -9,7 +9,8 @@ import {
   GetRoomIdByUID,
   GetAreaList,
   StartLiveStream,
-  UpdateStreamInfo
+  UpdateStreamInfo,
+  EndLiveStream
 } from './api'
 
 function createWindow() {
@@ -83,12 +84,16 @@ app.whenReady().then(() => {
     return await GetAreaList()
   })
 
+  ipcMain.handle('update-stream-info', async (_, { room_id, title, area_id, sessdata, csrf }) => {
+    return await UpdateStreamInfo({ room_id, title, area_id, sessdata, csrf })
+  })
+
   ipcMain.handle('start-live-stream', async (_, { room_id, area_v2, platform, sessdata, csrf }) => {
     return await StartLiveStream({ room_id, area_v2, platform, sessdata, csrf })
   })
 
-  ipcMain.handle('update-stream-info', async (_, { room_id, title, area_id, sessdata, csrf }) => {
-    return await UpdateStreamInfo({ room_id, title, area_id, sessdata, csrf })
+  ipcMain.handle('end-live-stream', async (_, { room_id, platform, sessdata, csrf }) => {
+    return await EndLiveStream({ room_id, platform, sessdata, csrf })
   })
 
   createWindow()
