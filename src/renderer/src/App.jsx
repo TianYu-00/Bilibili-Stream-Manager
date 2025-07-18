@@ -148,6 +148,7 @@ function App() {
 
   const handleAreaChange = ({ id, name }) => {
     const area = { id, name }
+    console.log(area)
     setSelectedArea(area)
     localStorage.setItem('SELECTED_AREA', JSON.stringify(area))
   }
