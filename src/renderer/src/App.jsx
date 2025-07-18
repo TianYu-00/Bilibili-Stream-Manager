@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import QRCode from 'react-qr-code'
 import AreaList from './components/AreaList'
 import StreamTitle from './components/StreamTitle'
+import StartStream from './components/StartStream'
 
 function App() {
   const [qrData, setQrData] = useState(null)
@@ -14,6 +15,7 @@ function App() {
   const [csrf, setCSRF] = useState(localStorage.getItem('bili_jct') || '')
   const [mid, setMid] = useState(localStorage.getItem('MID') || '')
 
+  const [platform, setPlatform] = useState('pc_link')
   const [selectedAreaId, setSelectedAreaId] = useState(null)
   const [streamTitle, setStreamTitle] = useState('')
 
@@ -189,6 +191,13 @@ function App() {
         {roomId && <p className="mt-1 break-words">Room ID: {roomId}</p>}
         <AreaList selectedAreaId={selectedAreaId} onAreaChange={handleAreaChange} />
         <StreamTitle title={streamTitle} onTitleChange={handleStreamTitleChange} />
+        <StartStream
+          room_id={roomId}
+          area_v2={selectedAreaId}
+          platform={platform}
+          sessdata={sessdata}
+          csrf={csrf}
+        />
       </div>
     </div>
   )

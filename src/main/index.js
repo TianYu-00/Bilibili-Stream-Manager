@@ -2,7 +2,14 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { GetLoginQRCode, PollLoginStatus, VerifyLogin, GetRoomIdByUID, GetAreaList } from './api'
+import {
+  GetLoginQRCode,
+  PollLoginStatus,
+  VerifyLogin,
+  GetRoomIdByUID,
+  GetAreaList,
+  StartLiveStream
+} from './api'
 
 function createWindow() {
   // Create the browser window.
@@ -73,6 +80,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('get-area-list', async () => {
     return await GetAreaList()
+  })
+
+  ipcMain.handle('start-live-stream', async (_, { room_id, area_v2, platform, sessdata, csrf }) => {
+    return await StartLiveStream({ room_id, area_v2, platform, sessdata, csrf })
   })
 
   createWindow()

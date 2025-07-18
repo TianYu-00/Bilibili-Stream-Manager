@@ -14,6 +14,12 @@ https://github.com/SocialSisterYi/bilibili-API-collect/issues/1143
 
 Get Area List
 https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/live_area.md#%E8%8E%B7%E5%8F%96%E5%85%A8%E9%83%A8%E7%9B%B4%E6%92%AD%E9%97%B4%E5%88%86%E5%8C%BA%E5%88%97%E8%A1%A8
+
+StartStream
+https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/manage.md#%E5%BC%80%E5%A7%8B%E7%9B%B4%E6%92%AD
+
+EndStream
+https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/manage.md#%E5%85%B3%E9%97%AD%E7%9B%B4%E6%92%AD
 */
 
 // Get Login QR Code
@@ -97,6 +103,32 @@ export async function GetRoomIdByUID(uid) {
 export async function GetAreaList() {
   try {
     const response = await axios.get(`https://api.live.bilibili.com/room/v1/Area/getList`)
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function StartLiveStream({ room_id, area_v2, platform, sessdata, csrf }) {
+  try {
+    const formBody = new URLSearchParams({
+      room_id, // room id
+      area_v2, // area child id
+      platform, // pc_link or android_link // web_link (deprecated)
+      csrf // bili_jct
+    }).toString()
+
+    const response = await axios.post(
+      'https://api.live.bilibili.com/room/v1/Room/startLive',
+      formBody,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Cookie: `SESSDATA=${sessdata}; bili_jct=${csrf}`
+        }
+      }
+    )
+
     return response.data
   } catch (error) {
     throw error

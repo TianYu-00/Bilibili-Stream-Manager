@@ -7,7 +7,9 @@ const api = {
   pollLoginStatus: (qrcodeKey) => ipcRenderer.invoke('poll-login-status', qrcodeKey),
   verifyLogin: (sessdata) => ipcRenderer.invoke('verify-login', sessdata),
   getRoomIdByUID: (uid) => ipcRenderer.invoke('get-room-id-by-uid', uid),
-  getAreaList: () => ipcRenderer.invoke('get-area-list')
+  getAreaList: () => ipcRenderer.invoke('get-area-list'),
+  startLiveStream: ({ room_id, area_v2, platform, sessdata, csrf }) =>
+    ipcRenderer.invoke('start-live-stream', { room_id, area_v2, platform, sessdata, csrf })
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
