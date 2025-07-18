@@ -11,7 +11,6 @@ function App() {
   const [qrData, setQrData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [statusMessage, setStatusMessage] = useState('')
   const [roomId, setRoomId] = useState(null)
 
   const [qrStatus, setQRStatus] = useState('')
@@ -21,8 +20,16 @@ function App() {
   const [username, setUsername] = useState('')
 
   const [platform, setPlatform] = useState('pc_link')
-  const [selectedArea, setSelectedArea] = useState(null)
-  const [streamTitle, setStreamTitle] = useState('')
+  const [selectedArea, setSelectedArea] = useState(() => {
+    const storedArea = localStorage.getItem('SELECTED_AREA')
+    return storedArea ? JSON.parse(storedArea) : null
+  })
+
+  const [streamTitle, setStreamTitle] = useState(() => {
+    return localStorage.getItem('STREAM_TITLE') || ''
+  })
+  const [streamAddress, setStreamAddress] = useState('')
+  const [streamKey, setStreamKey] = useState('')
 
   const intervalRef = useRef(null)
 
@@ -129,14 +136,14 @@ function App() {
   }
 
   const handleAreaChange = ({ id, name }) => {
-    console.log('Selected Area ID:', id)
-    console.log('Selected Area Name:', name)
-    setSelectedArea({ id, name })
+    const area = { id, name }
+    setSelectedArea(area)
+    localStorage.setItem('SELECTED_AREA', JSON.stringify(area))
   }
 
   const handleStreamTitleChange = (newTitle) => {
     setStreamTitle(newTitle)
-    console.log('Stream Title:', newTitle)
+    localStorage.setItem('STREAM_TITLE', newTitle)
   }
 
   // Auto verify on session load
@@ -176,6 +183,8 @@ function App() {
           platform={platform}
           sessdata={sessdata}
           csrf={csrf}
+          setStreamAddress={setStreamAddress}
+          setStreamKey={setStreamKey}
         />
 
         <EndStream room_id={roomId} platform={platform} sessdata={sessdata} csrf={csrf} />
@@ -193,6 +202,8 @@ function App() {
         area_name={selectedArea?.name}
         area_id={selectedArea?.id}
         platform={platform}
+        stream_address={streamAddress}
+        stream_key={streamKey}
       />
 
       {!isLoggedIn ? (

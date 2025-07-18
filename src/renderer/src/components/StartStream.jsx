@@ -1,6 +1,14 @@
 import React, { useState } from 'react'
 
-export default function StartStream({ room_id, area_v2, platform, sessdata, csrf }) {
+export default function StartStream({
+  room_id,
+  area_v2,
+  platform,
+  sessdata,
+  csrf,
+  setStreamAddress,
+  setStreamKey
+}) {
   const [status, setStatus] = useState('idle') // idle | loading | success
 
   const handleStartClick = async () => {
@@ -23,6 +31,8 @@ export default function StartStream({ room_id, area_v2, platform, sessdata, csrf
 
       if (response.code === 0) {
         setStatus('success')
+        setStreamAddress(response.data?.rtmp?.addr)
+        setStreamKey(response.data?.rtmp?.code)
         setTimeout(() => setStatus('idle'), 2000)
       } else {
         console.error('Start failed:', response.msg || response)

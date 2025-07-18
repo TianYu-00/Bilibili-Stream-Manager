@@ -11,7 +11,9 @@ export default function TableComponent({
   title,
   area_name,
   area_id,
-  platform
+  platform,
+  stream_address,
+  stream_key
 }) {
   const tableData = [
     { label: 'QR登录状态', value: qr_status, sensitive: false },
@@ -24,7 +26,9 @@ export default function TableComponent({
     { label: '直播间标题', value: title, sensitive: false },
     { label: '分区名字', value: area_name, sensitive: false },
     { label: '分区ID', value: area_id, sensitive: false },
-    { label: '平台', value: platform, sensitive: false }
+    { label: '平台', value: platform, sensitive: false },
+    { label: '推流地址', value: stream_address, sensitive: true },
+    { label: '推流码', value: stream_key, sensitive: true }
   ]
 
   const initialVisibility = {}

@@ -48,6 +48,8 @@ $ npm run build:linux
   - [x] Generate stream server
   - [x] Generate stream key
   - [x] End stream
+  - [x] Get stream address
+  - [x] Get stream key
 
 ### Reference
 [Bilibili API Collect Documentation](https://socialsisteryi.github.io/bilibili-API-collect/)
