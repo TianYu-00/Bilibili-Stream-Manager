@@ -40,8 +40,8 @@ $ npm run build:linux
   - [x] Verify Login State
   - [x] Get room id
 - [ ] Working towards
-  - [ ] Get area list
-  - [ ] Allow user to pick the area list
+  - [x] Get area list
+  - [x] Allow user to pick the area list
   - [ ] Stream title input
   - [ ] Start stream
   - [ ] Generate stream server

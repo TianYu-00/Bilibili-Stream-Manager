@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { GetLoginQRCode, PollLoginStatus, VerifyLogin, GetRoomIdByUID } from './api'
+import { GetLoginQRCode, PollLoginStatus, VerifyLogin, GetRoomIdByUID, GetAreaList } from './api'
 
 function createWindow() {
   // Create the browser window.
@@ -69,6 +69,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('get-room-id-by-uid', async (_, uid) => {
     return await GetRoomIdByUID(uid)
+  })
+
+  ipcMain.handle('get-area-list', async () => {
+    return await GetAreaList()
   })
 
   createWindow()

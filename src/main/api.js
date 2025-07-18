@@ -11,6 +11,9 @@ https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/login/lo
 
 Get Room ID By UID
 https://github.com/SocialSisterYi/bilibili-API-collect/issues/1143
+
+Get Area List
+https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/live_area.md#%E8%8E%B7%E5%8F%96%E5%85%A8%E9%83%A8%E7%9B%B4%E6%92%AD%E9%97%B4%E5%88%86%E5%8C%BA%E5%88%97%E8%A1%A8
 */
 
 // Get Login QR Code
@@ -22,7 +25,7 @@ export async function GetLoginQRCode() {
     // console.log(response.data)
     return response.data
   } catch (error) {
-    console.error('Error fetching data:', error)
+    throw error
   }
 }
 
@@ -60,7 +63,7 @@ export async function PollLoginStatus(qrcode_key) {
     // console.log('LOGIN DATA:', response.data)
     return response.data
   } catch (error) {
-    console.error('Error polling login status:', error)
+    throw error
   }
 }
 
@@ -75,7 +78,7 @@ export async function VerifyLogin(sessdata) {
     return response.data
   } catch (err) {
     console.error('Login verification failed:', err)
-    return null
+    throw error
   }
 }
 
@@ -85,6 +88,15 @@ export async function GetRoomIdByUID(uid) {
       params: { uid }
     })
 
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export async function GetAreaList() {
+  try {
+    const response = await axios.get(`https://api.live.bilibili.com/room/v1/Area/getList`)
     return response.data
   } catch (error) {
     throw error

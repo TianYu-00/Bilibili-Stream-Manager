@@ -6,7 +6,8 @@ const api = {
   getLoginQRCode: () => ipcRenderer.invoke('get-login-qrcode'),
   pollLoginStatus: (qrcodeKey) => ipcRenderer.invoke('poll-login-status', qrcodeKey),
   verifyLogin: (sessdata) => ipcRenderer.invoke('verify-login', sessdata),
-  getRoomIdByUID: (uid) => ipcRenderer.invoke('get-room-id-by-uid', uid)
+  getRoomIdByUID: (uid) => ipcRenderer.invoke('get-room-id-by-uid', uid),
+  getAreaList: () => ipcRenderer.invoke('get-area-list')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

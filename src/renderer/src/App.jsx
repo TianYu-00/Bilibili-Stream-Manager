@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import QRCode from 'react-qr-code'
+import AreaList from './components/AreaList'
 
 function App() {
   const [qrData, setQrData] = useState(null)
@@ -11,6 +12,8 @@ function App() {
   const [sessdata, setSessdata] = useState(localStorage.getItem('SESSDATA') || '')
   const [csrf, setCSRF] = useState(localStorage.getItem('bili_jct') || '')
   const [mid, setMid] = useState(localStorage.getItem('MID') || '')
+
+  const [selectedAreaId, setSelectedAreaId] = useState(null)
 
   const intervalRef = useRef(null)
 
@@ -122,6 +125,11 @@ function App() {
     clearCredentials()
   }
 
+  const handleAreaChange = (id) => {
+    console.log('Area selected in App.jsx:', id)
+    setSelectedAreaId(id)
+  }
+
   // Auto verify on session load
   useEffect(() => {
     if (sessdata && csrf && !isLoggedIn) {
@@ -172,6 +180,7 @@ function App() {
         {sessdata && <p className="mt-1 break-words">SESSDATA: {sessdata}</p>}
         {csrf && <p className="mt-1 break-words">CSRF: {csrf}</p>}
         {roomId && <p className="mt-1 break-words">Room ID: {roomId}</p>}
+        <AreaList selectedAreaId={selectedAreaId} onAreaChange={handleAreaChange} />
       </div>
     </div>
   )
