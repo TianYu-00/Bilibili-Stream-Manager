@@ -34,6 +34,7 @@ export async function GetLoginQRCode() {
     // console.log(response.data)
     return response.data
   } catch (error) {
+    console.error(error)
     throw error
   }
 }
@@ -72,6 +73,7 @@ export async function PollLoginStatus(qrcode_key) {
     // console.log('LOGIN DATA:', response.data)
     return response.data
   } catch (error) {
+    console.error(error)
     throw error
   }
 }
@@ -86,7 +88,7 @@ export async function VerifyLogin(sessdata) {
 
     return response.data
   } catch (err) {
-    console.error('Login verification failed:', err)
+    console.error(error)
     throw error
   }
 }
@@ -108,6 +110,7 @@ export async function GetAreaList() {
     const response = await axios.get(`https://api.live.bilibili.com/room/v1/Area/getList`)
     return response.data
   } catch (error) {
+    console.error(error)
     throw error
   }
 }
@@ -135,6 +138,7 @@ export async function UpdateStreamInfo({ room_id, title, area_id, sessdata, csrf
 
     return response.data
   } catch (error) {
+    console.error(error)
     throw error
   }
 }
@@ -161,6 +165,7 @@ export async function StartLiveStream({ room_id, area_v2, platform, sessdata, cs
 
     return response.data
   } catch (error) {
+    console.error(error)
     throw error
   }
 }
