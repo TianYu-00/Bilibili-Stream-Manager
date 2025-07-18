@@ -33,12 +33,14 @@ export default function AreaList({ selectedArea, onAreaChange }) {
   }
 
   return (
-    <div>
-      <label className="block mb-2">Area list:</label>
-      <select className="" onChange={handleSelectChange} value={selectedArea?.id || ''}>
-        <option value="" disabled>
-          -- Please select an area --
-        </option>
+    <div className="flex items-center space-x-2">
+      <label className="block text-sm">分区:</label>
+      <select
+        className="border border-gray-300 rounded px-2 py-1"
+        onChange={handleSelectChange}
+        value={selectedArea?.id || ''}
+      >
+        <option value="">保持原分区</option>
         {areaList.map((area) => (
           <React.Fragment key={area.id}>
             <option disabled className="text-green-500">

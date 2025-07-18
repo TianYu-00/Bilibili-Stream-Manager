@@ -40,9 +40,9 @@ export default function StartStream({ room_id, area_v2, platform, sessdata, csrf
     <div>
       <button
         onClick={handleStart}
-        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
       >
-        Start Stream
+        开启直播
       </button>
       {status && <p className="mt-2">{status}</p>}
     </div>

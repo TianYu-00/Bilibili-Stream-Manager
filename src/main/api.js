@@ -31,7 +31,7 @@ export async function GetLoginQRCode() {
     const response = await axios.get(
       'https://passport.bilibili.com/x/passport-login/web/qrcode/generate'
     )
-    // console.log(response.data)
+    console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -71,6 +71,7 @@ export async function PollLoginStatus(qrcode_key) {
     }
 
     // console.log('LOGIN DATA:', response.data)
+    console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -86,6 +87,7 @@ export async function VerifyLogin(sessdata) {
       }
     })
 
+    console.log(response.data)
     return response.data
   } catch (err) {
     console.error(error)
@@ -99,6 +101,7 @@ export async function GetRoomIdByUID(uid) {
       params: { uid }
     })
 
+    console.log(response.data)
     return response.data
   } catch (error) {
     throw error
@@ -108,6 +111,8 @@ export async function GetRoomIdByUID(uid) {
 export async function GetAreaList() {
   try {
     const response = await axios.get(`https://api.live.bilibili.com/room/v1/Area/getList`)
+
+    console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -136,6 +141,7 @@ export async function UpdateStreamInfo({ room_id, title, area_id, sessdata, csrf
       }
     )
 
+    console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -163,6 +169,7 @@ export async function StartLiveStream({ room_id, area_v2, platform, sessdata, cs
       }
     )
 
+    console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -189,6 +196,7 @@ export async function EndLiveStream({ room_id, platform, sessdata, csrf }) {
       }
     )
 
+    console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)

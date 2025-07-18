@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 
 export default function TableComponent({
+  qr_status,
   sessdata,
   csrf,
   uid,
+  username,
   isLoggedIn,
   room_id,
   title,
@@ -12,8 +14,10 @@ export default function TableComponent({
   platform
 }) {
   const tableData = [
+    { label: 'QR登录状态', value: qr_status, sensitive: false },
     { label: '登录状态', value: isLoggedIn ? '已登录' : '未登录', sensitive: false },
     { label: '用户ID', value: uid, sensitive: false },
+    { label: '用户名', value: username, sensitive: false },
     { label: 'SESSDATA', value: sessdata, sensitive: true },
     { label: 'CSRF', value: csrf, sensitive: true },
     { label: '直播间ID', value: room_id, sensitive: false },

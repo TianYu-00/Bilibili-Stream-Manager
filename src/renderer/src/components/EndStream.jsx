@@ -27,9 +27,9 @@ export default function EndStream({ room_id, platform, sessdata, csrf }) {
     <div>
       <button
         onClick={handleEnd}
-        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
       >
-        End Stream
+        结束直播
       </button>
       {status && <p className="mt-2">{status}</p>}
     </div>

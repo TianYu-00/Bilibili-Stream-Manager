@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 
 export default function UpdateStream({ room_id, title, area_id, sessdata, csrf }) {
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(null)
+  const [status, setStatus] = useState('idle') // idle | loading | success
 
   const handleUpdateClick = async () => {
-    setLoading(true)
-    setSuccess(null)
+    setStatus('loading')
 
     try {
       const response = await window.api.updateStreamInfo({
@@ -16,29 +14,35 @@ export default function UpdateStream({ room_id, title, area_id, sessdata, csrf }
         sessdata,
         csrf
       })
+
       if (response.code === 0) {
-        setSuccess('Stream info updated successfully')
+        setStatus('success')
+        setTimeout(() => setStatus('idle'), 2000)
       } else {
         console.error('Update failed:', response.msg || response)
+        setStatus('idle')
       }
     } catch (error) {
       console.error(error)
-    } finally {
-      setLoading(false)
+      setStatus('idle')
     }
+  }
+
+  const getButtonText = () => {
+    if (status === 'loading') return '正在更新...'
+    if (status === 'success') return '更新成功'
+    return '更新直播间信息'
   }
 
   return (
     <div>
       <button
         onClick={handleUpdateClick}
-        disabled={loading}
-        className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+        disabled={status === 'loading' || status === 'success'}
+        className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 text-sm"
       >
-        {loading ? 'Updating...' : 'Update Stream Info'}
+        {getButtonText()}
       </button>
-
-      {success && <p className="mt-2">{success}</p>}
     </div>
   )
 }

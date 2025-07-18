@@ -14,9 +14,11 @@ function App() {
   const [statusMessage, setStatusMessage] = useState('')
   const [roomId, setRoomId] = useState(null)
 
+  const [qrStatus, setQRStatus] = useState('')
   const [sessdata, setSessdata] = useState(localStorage.getItem('SESSDATA') || '')
   const [csrf, setCSRF] = useState(localStorage.getItem('bili_jct') || '')
   const [mid, setMid] = useState(localStorage.getItem('MID') || '')
+  const [username, setUsername] = useState('')
 
   const [platform, setPlatform] = useState('pc_link')
   const [selectedArea, setSelectedArea] = useState(null)
@@ -51,14 +53,13 @@ function App() {
 
   const getLoginQRCode = async () => {
     setLoading(true)
-    setStatusMessage('')
+
     try {
       const data = await window.api.getLoginQRCode()
       setQrData(data)
       setIsLoggedIn(false)
     } catch (error) {
-      console.error('Failed to get QR code:', error)
-      setStatusMessage('Failed to get QR code.')
+      console.error(error)
     } finally {
       setLoading(false)
     }
@@ -67,49 +68,46 @@ function App() {
   const pollLogin = async (qrcodeKey) => {
     try {
       const response = await window.api.pollLoginStatus(qrcodeKey)
-      console.log('Poll result:', response.data)
 
       switch (response.data.code) {
         case 0:
           clearInterval(intervalRef.current)
           saveCredentials(response.data.sessdata, response.data.csrf)
-          setStatusMessage('Login successful!')
+          setQRStatus(response.data.message)
           verifyLoginStatus(response.data.sessdata)
           break
         case 86038:
           clearInterval(intervalRef.current)
-          setStatusMessage('❌ QR code expired')
+          setQRStatus(response.data.message)
           break
         case 86090:
-          setStatusMessage('📱 Scanned. Awaiting confirmation...')
+          setQRStatus(response.data.message)
           break
         case 86101:
-          setStatusMessage('⌛ Waiting for scan...')
+          setQRStatus(response.data.message)
           break
         default:
-          setStatusMessage(`${response.message || 'Unknown error'}`)
+          setQRStatus(response.data.message)
       }
     } catch (error) {
+      console.error(error)
       clearInterval(intervalRef.current)
-      setStatusMessage('Error checking login status')
     }
   }
 
   const verifyLoginStatus = async (sess) => {
     try {
       const response = await window.api.verifyLogin(sess)
-      console.log('Login status:', response)
       if (response?.code === 0 && response.data?.isLogin) {
         setIsLoggedIn(true)
-        setStatusMessage(`Logged in as ${response.data.uname}`)
+        setUsername(response.data.uname)
         if (!mid) saveCredentials(sessdata, csrf, response.data.mid)
       } else {
         throw new Error('Invalid session')
       }
     } catch (error) {
-      console.warn('Session invalid or expired')
+      console.error(error)
       setIsLoggedIn(false)
-      setStatusMessage('Session expired. Please log in again.')
       clearCredentials()
     }
   }
@@ -117,17 +115,15 @@ function App() {
   const getRoomIdByUID = async (uid) => {
     try {
       const response = await window.api.getRoomIdByUID(uid)
-      console.log('Room ID:', response.data.room_id)
       setRoomId(response.data.room_id)
     } catch (error) {
-      console.error('Failed to get Room ID:', error)
+      console.error(error)
     }
   }
 
   const handleLogout = () => {
     if (intervalRef.current) clearInterval(intervalRef.current)
     setQrData(null)
-    setStatusMessage('')
     setIsLoggedIn(false)
     clearCredentials()
   }
@@ -163,43 +159,8 @@ function App() {
   }, [mid, isLoggedIn])
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      <TableComponent
-        sessdata={sessdata}
-        csrf={csrf}
-        uid={mid}
-        isLoggedIn={isLoggedIn}
-        room_id={roomId}
-        title={streamTitle}
-        area_name={selectedArea?.name}
-        area_id={selectedArea?.id}
-        platform={platform}
-      />
-
-      {!isLoggedIn ? (
-        <button
-          onClick={getLoginQRCode}
-          disabled={loading}
-          className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? 'Loading...' : 'Get Login QR Code'}
-        </button>
-      ) : (
-        <button
-          onClick={handleLogout}
-          className="mt-4 px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700"
-        >
-          Logout
-        </button>
-      )}
-
-      {qrData?.data?.url && !isLoggedIn && (
-        <div className="mt-10 bg-white p-4 rounded shadow">
-          <QRCode value={qrData.data.url} size={256} />
-        </div>
-      )}
-
-      <div className="max-w-lg px-4">
+    <div className="flex flex-col items-start justify-start min-h-screen bg-gray-100 p-6">
+      <div className="flex items-center space-x-2">
         <AreaList selectedArea={selectedArea} onAreaChange={handleAreaChange} />
         <StreamTitle title={streamTitle} onTitleChange={handleStreamTitleChange} />
         <UpdateStream
@@ -219,6 +180,43 @@ function App() {
 
         <EndStream room_id={roomId} platform={platform} sessdata={sessdata} csrf={csrf} />
       </div>
+
+      <TableComponent
+        qr_status={qrStatus}
+        sessdata={sessdata}
+        csrf={csrf}
+        uid={mid}
+        username={username}
+        isLoggedIn={isLoggedIn}
+        room_id={roomId}
+        title={streamTitle}
+        area_name={selectedArea?.name}
+        area_id={selectedArea?.id}
+        platform={platform}
+      />
+
+      {!isLoggedIn ? (
+        <button
+          onClick={getLoginQRCode}
+          disabled={loading}
+          className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+        >
+          {loading ? 'Loading...' : '二维码登录'}
+        </button>
+      ) : (
+        <button
+          onClick={handleLogout}
+          className="mt-4 px-6 py-3 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          退出登录
+        </button>
+      )}
+
+      {qrData?.data?.url && !isLoggedIn && (
+        <div className="mt-4 bg-white rounded shadow">
+          <QRCode value={qrData.data.url} size={256} />
+        </div>
+      )}
     </div>
   )
 }

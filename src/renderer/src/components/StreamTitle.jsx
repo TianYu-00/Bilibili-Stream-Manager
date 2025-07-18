@@ -6,17 +6,17 @@ export default function StreamTitle({ title, onTitleChange }) {
   }
 
   return (
-    <div>
-      <label htmlFor="streamTitle" className="block mb-1">
-        Stream title:
+    <div className="flex items-center space-x-2">
+      <label htmlFor="streamTitle" className="block text-sm">
+        直播间标题:
       </label>
       <input
         id="streamTitle"
         type="text"
         value={title}
         onChange={handleChange}
-        className=""
-        placeholder="Enter stream title"
+        className="border border-gray-300 rounded px-2 py-1"
+        placeholder="输入直播间标题"
       />
     </div>
   )
