@@ -1,37 +1,47 @@
 import React, { useState } from 'react'
 
 export default function EndStream({ room_id, platform, sessdata, csrf }) {
-  const [status, setStatus] = useState('')
+  const [status, setStatus] = useState('idle') // idle | loading | success
 
-  const handleEnd = async () => {
+  const handleEndClick = async () => {
     if (!room_id || !platform || !sessdata || !csrf) {
-      setStatus('Please make sure all parameters are set.')
+      alert('缺少必要的参数，无法结束直播')
       return
     }
-    setStatus('Ending stream...')
+
+    setStatus('loading')
 
     try {
       const response = await window.api.endLiveStream({ room_id, platform, sessdata, csrf })
       console.log(response)
       if (response.code === 0) {
-        setStatus('Live stream ended successfully')
+        setStatus('success')
+        setTimeout(() => setStatus('idle'), 2000)
       } else {
-        setStatus(`Failed to end stream: ${response.message || response.msg}`)
+        console.error('End failed:', response.message || response.msg || response)
+        setStatus('idle')
       }
     } catch (error) {
-      setStatus(`Error: ${error.message}`)
+      console.error(error)
+      setStatus('idle')
     }
+  }
+
+  const getButtonText = () => {
+    if (status === 'loading') return '正在结束直播...'
+    if (status === 'success') return '直播已结束'
+    return '结束直播'
   }
 
   return (
     <div>
       <button
-        onClick={handleEnd}
-        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+        onClick={handleEndClick}
+        disabled={status === 'loading' || status === 'success'}
+        className="p-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm"
       >
-        结束直播
+        {getButtonText()}
       </button>
-      {status && <p className="mt-2">{status}</p>}
     </div>
   )
 }
