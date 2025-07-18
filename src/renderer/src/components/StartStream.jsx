@@ -22,6 +22,12 @@ export default function StartStream({ room_id, area_v2, platform, sessdata, csrf
       if (response.code === 0) {
         setStatus('Stream started successfully')
         console.log('Stream start response:', response.data)
+      } else if (response.code === 60024) {
+        // Handle this situation better with maybe ui for user to copy and paste, but ill do that later on.
+        setStatus(
+          'Face recognition is required, please open this link in your mobile browser to complete face recognition:',
+          response.data.qr
+        )
       } else {
         setStatus(`Failed to start stream: ${response.message || response.msg}`)
       }
