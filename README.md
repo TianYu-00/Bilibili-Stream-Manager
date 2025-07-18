@@ -32,3 +32,21 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+### TO DO LIST
+- [ ] Done
+  - [x] Generate QR Code
+  - [x] QR Code Login
+  - [x] Verify Login State
+  - [x] Get room id
+- [ ] Working towards
+  - [ ] Get area list
+  - [ ] Allow user to pick the area list
+  - [ ] Stream title input
+  - [ ] Start stream
+  - [ ] Generate stream server
+  - [ ] Generate stream key
+  - [ ] End stream
+
+### Reference
+[Bilibili API Collect Documentation](https://socialsisteryi.github.io/bilibili-API-collect/)
