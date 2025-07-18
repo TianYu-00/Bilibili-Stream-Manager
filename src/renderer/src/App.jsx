@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import QRCode from 'react-qr-code'
 import AreaList from './components/AreaList'
+import StreamTitle from './components/StreamTitle'
 
 function App() {
   const [qrData, setQrData] = useState(null)
@@ -14,6 +15,7 @@ function App() {
   const [mid, setMid] = useState(localStorage.getItem('MID') || '')
 
   const [selectedAreaId, setSelectedAreaId] = useState(null)
+  const [streamTitle, setStreamTitle] = useState('')
 
   const intervalRef = useRef(null)
 
@@ -130,6 +132,11 @@ function App() {
     setSelectedAreaId(id)
   }
 
+  const handleStreamTitleChange = (newTitle) => {
+    setStreamTitle(newTitle)
+    console.log('Stream Title:', newTitle)
+  }
+
   // Auto verify on session load
   useEffect(() => {
     if (sessdata && csrf && !isLoggedIn) {
@@ -181,6 +188,7 @@ function App() {
         {csrf && <p className="mt-1 break-words">CSRF: {csrf}</p>}
         {roomId && <p className="mt-1 break-words">Room ID: {roomId}</p>}
         <AreaList selectedAreaId={selectedAreaId} onAreaChange={handleAreaChange} />
+        <StreamTitle title={streamTitle} onTitleChange={handleStreamTitleChange} />
       </div>
     </div>
   )

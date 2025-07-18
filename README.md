@@ -42,7 +42,7 @@ $ npm run build:linux
 - [ ] Working towards
   - [x] Get area list
   - [x] Allow user to pick the area list
-  - [ ] Stream title input
+  - [x] Stream title input
   - [ ] Start stream
   - [ ] Generate stream server
   - [ ] Generate stream key
