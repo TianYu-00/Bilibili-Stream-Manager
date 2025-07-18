@@ -56,6 +56,7 @@ function App() {
     setCSRF('')
     setMid('')
     setRoomId(null)
+    setUsername('')
   }
 
   const getLoginQRCode = async () => {
