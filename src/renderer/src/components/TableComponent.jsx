@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 
 export default function TableComponent({
   qr_status,
@@ -17,31 +17,53 @@ export default function TableComponent({
   live_status,
   faceRecognitionAddress
 }) {
-  const accountData = [
-    { label: '二维码登录状态', value: qr_status, sensitive: false },
-    { label: '登录状态', value: isLoggedIn ? '已登录' : '未登录', sensitive: false },
-    { label: '用户ID', value: uid, sensitive: false },
-    { label: '用户名', value: username, sensitive: false },
-    { label: 'SESSDATA', value: sessdata, sensitive: true },
-    { label: 'CSRF', value: csrf, sensitive: true }
-  ]
+  const [copiedLabels, setCopiedLabels] = useState({})
+  const timeoutRefs = useRef({}) // to store timeouts per label
 
-  const streamData = [
-    { label: '直播间状态', value: live_status, sensitive: false },
-    { label: '直播间ID', value: room_id, sensitive: false },
-    { label: '直播间标题', value: title, sensitive: false },
-    { label: '分区名字', value: area_name, sensitive: false },
-    { label: '分区ID', value: area_id, sensitive: false },
-    { label: '平台', value: platform, sensitive: false },
-    { label: '推流地址', value: stream_address, sensitive: true },
-    { label: '推流码', value: stream_key, sensitive: true },
-    { label: '人脸识别地址', value: faceRecognitionAddress, sensitive: true }
-  ]
+  const accountData = useMemo(
+    () => [
+      { label: '二维码登录状态', value: qr_status, sensitive: false },
+      { label: '登录状态', value: isLoggedIn ? '已登录' : '未登录', sensitive: false },
+      { label: '用户ID', value: uid, sensitive: false },
+      { label: '用户名', value: username, sensitive: false },
+      { label: 'SESSDATA', value: sessdata, sensitive: true },
+      { label: 'CSRF', value: csrf, sensitive: true }
+    ],
+    [qr_status, isLoggedIn, uid, username, sessdata, csrf]
+  )
 
-  const initialVisibility = {}
-  ;[...accountData, ...streamData].forEach(({ label, sensitive }) => {
-    initialVisibility[label] = !sensitive
-  })
+  const streamData = useMemo(
+    () => [
+      { label: '直播间状态', value: live_status, sensitive: false },
+      { label: '直播间ID', value: room_id, sensitive: false },
+      { label: '直播间标题', value: title, sensitive: false },
+      { label: '分区名字', value: area_name, sensitive: false },
+      { label: '分区ID', value: area_id, sensitive: false },
+      { label: '平台', value: platform, sensitive: false },
+      { label: '推流地址', value: stream_address, sensitive: true },
+      { label: '推流码', value: stream_key, sensitive: true },
+      { label: '人脸识别地址', value: faceRecognitionAddress, sensitive: true }
+    ],
+    [
+      live_status,
+      room_id,
+      title,
+      area_name,
+      area_id,
+      platform,
+      stream_address,
+      stream_key,
+      faceRecognitionAddress
+    ]
+  )
+
+  const initialVisibility = useMemo(() => {
+    const visibilityState = {}
+    ;[...accountData, ...streamData].forEach(({ label, sensitive }) => {
+      visibilityState[label] = !sensitive
+    })
+    return visibilityState
+  }, [accountData, streamData])
 
   const [visibility, setVisibility] = useState(initialVisibility)
 
@@ -53,6 +75,25 @@ export default function TableComponent({
     if (val == null) return ''
     if (typeof val === 'string') return '*'.repeat(val.length)
     return '***'
+  }
+
+  const copyValue = async (label, val) => {
+    if (val == null) return
+    try {
+      await navigator.clipboard.writeText(val)
+      setCopiedLabels((prev) => ({ ...prev, [label]: true }))
+
+      if (timeoutRefs.current[label]) {
+        clearTimeout(timeoutRefs.current[label])
+      }
+
+      timeoutRefs.current[label] = setTimeout(() => {
+        setCopiedLabels((prev) => ({ ...prev, [label]: false }))
+        delete timeoutRefs.current[label]
+      }, 1000)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const renderTable = (data, heading) => (
@@ -79,9 +120,16 @@ export default function TableComponent({
                   <button
                     type="button"
                     onClick={() => toggleVisibility(label)}
-                    className="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300"
+                    className="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300 w-12"
                   >
                     {isVisible ? '隐藏' : '显示'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => copyValue(label, value)}
+                    className="px-2 py-1 text-xs bg-gray-200 rounded hover:bg-gray-300 mt-1 w-12"
+                  >
+                    {copiedLabels[label] ? '✓' : '复制'}
                   </button>
                 </td>
               </tr>

@@ -83,6 +83,7 @@ function App() {
       const data = await window.api.getLoginQRCode()
       setQrData(data)
       setIsLoggedIn(false)
+      setQRStatus('')
       setShowQRModal(true)
     } catch (error) {
       console.error(error)
