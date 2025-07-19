@@ -176,7 +176,7 @@ function App() {
   const getRoomInfo = async (room_id) => {
     try {
       const response = await window.api.getRoomInfo(room_id)
-      console.log(response.data)
+      // console.log(response.data)
       setLiveStreamArea({ id: response.data.area_id, name: response.data.area_name })
       setLiveStreamTitle(response.data.title)
 

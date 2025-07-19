@@ -39,6 +39,7 @@ export default function StreamTitle({ title, onTitleChange }) {
           placeholder="输入直播间标题"
           isClearable
           className="text-sm w-full"
+          formatCreateLabel={(inputValue) => `新增 "${inputValue}"`}
           styles={{
             input: (base) => ({
               ...base,
