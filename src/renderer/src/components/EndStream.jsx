@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function EndStream({
   room_id,
@@ -13,7 +14,7 @@ export default function EndStream({
 
   const handleEndClick = async () => {
     if (!room_id || !platform || !sessdata || !csrf) {
-      alert('缺少必要的参数，无法结束直播')
+      toast.error('缺少必要的参数，无法结束直播')
       return
     }
 
@@ -27,18 +28,19 @@ export default function EndStream({
         setStreamAddress('')
         setStreamKey('')
         setLiveStreamStatus('未开播')
+        toast.success('关播成功')
         setTimeout(() => setStatus('idle'), 2000)
       } else {
         console.error('End failed:', response.message || response.msg || response)
         switch (response.code) {
           case -400:
-            alert('没有权限')
+            toast.error('没有权限')
             break
           case 65530:
-            alert('Token错误（登录错误）')
+            toast.error('Token错误（登录错误）')
             break
           default:
-            alert('未知错误')
+            toast.error('未知错误')
         }
         setStatus('idle')
       }

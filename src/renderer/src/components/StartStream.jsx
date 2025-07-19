@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function StartStream({
   room_id,
@@ -16,7 +17,7 @@ export default function StartStream({
   const handleStartClick = async () => {
     // Validate required parameters
     if (!room_id || !area_v2 || !platform || !sessdata || !csrf) {
-      alert('缺少必要的参数，无法开始直播')
+      toast.error('缺少必要的参数，无法开始直播')
       return
     }
 
@@ -36,31 +37,32 @@ export default function StartStream({
         setStreamAddress(response.data?.rtmp?.addr)
         setStreamKey(response.data?.rtmp?.code)
         setLiveStreamStatus('直播中')
+        toast.success('开播成功')
         setTimeout(() => setStatus('idle'), 2000)
       } else {
         console.error('Start failed:', response.message || response.msg || response)
         switch (response.code) {
           case 1:
-            alert('错误')
+            toast.error('错误')
             break
           case 60037:
-            alert('web 在线开播已下线')
+            toast.error('web 在线开播已下线')
             break
           case 60024:
             setFaceRecognitionAddress(response.data?.qr)
-            alert('请复制人脸识别地址到手机浏览器并进行人脸识别, 然后再尝试开播。')
+            toast.error('请复制人脸识别地址用手机验证后才能开播') // NOTE: Implement qr code scan
             break
           case 60013:
-            alert('非常抱歉，您所在的地区受实名认证限制无法开播')
+            toast.error('非常抱歉，您所在的地区受实名认证限制无法开播')
             break
           case 60009:
-            alert('分区已下线')
+            toast.error('分区已下线')
             break
           case 65530:
-            alert('Token错误（登录错误）')
+            toast.error('Token错误（登录错误）')
             break
           default:
-            alert('未知错误')
+            toast.error('未知错误')
         }
         setStatus('idle')
       }

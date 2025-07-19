@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function UpdateStream({
   room_id,
@@ -30,30 +31,31 @@ export default function UpdateStream({
         setStatus('success')
         setLiveStreamArea({ id: area_id, name: area_name })
         setLiveStreamTitle(title)
+        toast.success('更新成功')
         setTimeout(() => setStatus('idle'), 2000)
       } else {
         console.error('Update failed:', response.msg || response)
         switch (response.code) {
           case -1:
-            alert('操作太频繁')
+            toast.error('操作太频繁')
             break
           case 1:
-            alert('错误')
+            toast.error('错误')
             break
           case 3:
-            alert('未登录或鉴权失败')
+            toast.error('未登录或鉴权失败')
             break
           case 405:
-            alert('不允许的请求方法')
+            toast.error('不允许的请求方法')
             break
           case 60009:
-            alert('分区已下线')
+            toast.error('分区已下线')
             break
           case 65530:
-            alert('Token错误（登录错误）')
+            toast.error('Token错误（登录错误）')
             break
           default:
-            alert('未知错误')
+            toast.error('未知错误')
         }
 
         setStatus('idle')

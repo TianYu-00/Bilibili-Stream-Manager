@@ -6,7 +6,6 @@ import StartStream from './components/StartStream'
 import UpdateStream from './components/UpdateStream'
 import EndStream from './components/EndStream'
 import TableComponent from './components/TableComponent'
-import CreatableSelect from 'react-select/creatable'
 
 function App() {
   const [qrData, setQrData] = useState(null)
@@ -337,6 +336,8 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* <QRCode value={faceRecognitionAddress} size={256} /> */}
     </div>
   )
 }
