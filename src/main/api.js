@@ -26,6 +26,9 @@ https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/man
 
 Get Room Info
 https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%BF%A1%E6%81%AF
+
+Logout
+https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/login/exit.md#%E9%80%80%E5%87%BA%E7%99%BB%E5%BD%95web%E7%AB%AF
 */
 
 // Get Login QR Code
@@ -34,7 +37,7 @@ export async function GetLoginQRCode() {
     const response = await axios.get(
       'https://passport.bilibili.com/x/passport-login/web/qrcode/generate'
     )
-    console.log(response.data)
+    // console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -58,6 +61,7 @@ export async function PollLoginStatus(qrcode_key) {
     // console.log('Set-Cookie Headers:', setCookies)
     let sessdata = null
     let csrf = null
+    let dedeuserid = null
 
     if (setCookies) {
       const sessCookie = setCookies.find((cookie) => cookie.startsWith('SESSDATA='))
@@ -71,10 +75,15 @@ export async function PollLoginStatus(qrcode_key) {
         csrf = csrfCookie.split(';')[0].split('=')[1]
         response.data.data.csrf = csrf
       }
+
+      const dedeuseridCookie = setCookies.find((cookie) => cookie.startsWith('DedeUserID='))
+      if (csrfCookie) {
+        dedeuserid = dedeuseridCookie.split(';')[0].split('=')[1]
+        response.data.data.dedeuserid = dedeuserid
+      }
     }
 
-    // console.log('LOGIN DATA:', response.data)
-    console.log(response.data)
+    // console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -90,7 +99,7 @@ export async function VerifyLogin(sessdata) {
       }
     })
 
-    console.log(response.data)
+    // console.log(response.data)
     return response.data
   } catch (err) {
     console.error(error)
@@ -104,7 +113,7 @@ export async function GetRoomIdByUID(uid) {
       params: { uid }
     })
 
-    console.log(response.data)
+    // console.log(response.data)
     return response.data
   } catch (error) {
     throw error
@@ -115,7 +124,7 @@ export async function GetAreaList() {
   try {
     const response = await axios.get(`https://api.live.bilibili.com/room/v1/Area/getList`)
 
-    console.log(response.data)
+    // console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -144,7 +153,7 @@ export async function UpdateStreamInfo({ room_id, title, area_id, sessdata, csrf
       }
     )
 
-    console.log(response.data)
+    // console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -172,7 +181,7 @@ export async function StartLiveStream({ room_id, area_v2, platform, sessdata, cs
       }
     )
 
-    console.log(response.data)
+    // console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -199,7 +208,7 @@ export async function EndLiveStream({ room_id, platform, sessdata, csrf }) {
       }
     )
 
-    console.log(response.data)
+    // console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
@@ -213,9 +222,35 @@ export async function GetRoomInfo(room_id) {
       params: { room_id }
     })
 
-    console.log(response.data)
+    // console.log(response.data)
     return response.data
   } catch (error) {
     console.error(error)
+  }
+}
+
+export async function LogOut({ sessdata, csrf, dedeuserid }) {
+  // mainly used to destroy the session token on bilibili's server side, the rest i have handled it through App.jsx
+  try {
+    const payload = new URLSearchParams({
+      biliCSRF: csrf
+    })
+
+    const response = await axios.post(
+      'https://passport.bilibili.com/login/exit/v2',
+      payload.toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Cookie: `SESSDATA=${sessdata}; bili_jct=${csrf}; DedeUserID=${dedeuserid} `
+        }
+      }
+    )
+
+    // console.log(response.data)
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
   }
 }

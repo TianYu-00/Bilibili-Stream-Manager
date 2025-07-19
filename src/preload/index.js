@@ -22,7 +22,10 @@ const api = {
   endLiveStream: ({ room_id, platform, sessdata, csrf }) =>
     ipcRenderer.invoke('end-live-stream', { room_id, platform, sessdata, csrf }),
 
-  getRoomInfo: (room_id) => ipcRenderer.invoke('get-room-info', room_id)
+  getRoomInfo: (room_id) => ipcRenderer.invoke('get-room-info', room_id),
+
+  logOut: ({ sessdata, csrf, dedeuserid }) =>
+    ipcRenderer.invoke('log-out', { sessdata, csrf, dedeuserid })
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

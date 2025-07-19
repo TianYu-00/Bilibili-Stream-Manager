@@ -17,7 +17,8 @@ function App() {
   const [qrStatus, setQRStatus] = useState('')
   const [sessdata, setSessdata] = useState(localStorage.getItem('SESSDATA') || '')
   const [csrf, setCSRF] = useState(localStorage.getItem('bili_jct') || '')
-  const [mid, setMid] = useState(localStorage.getItem('MID') || '')
+  const [mid, setMid] = useState(localStorage.getItem('MID') || '') // uid
+  const [deDeUserID, setDeDeUserID] = useState(localStorage.getItem('DeDeUserID') || '') // uid from cookie
   const [username, setUsername] = useState('')
 
   const [platform, setPlatform] = useState('pc_link')
@@ -38,7 +39,7 @@ function App() {
 
   const intervalRef = useRef(null)
 
-  const saveCredentials = (sessdata, csrf, mid) => {
+  const saveCredentials = (sessdata, csrf, mid, dedeuserid) => {
     if (sessdata) {
       localStorage.setItem('SESSDATA', sessdata)
       setSessdata(sessdata)
@@ -46,6 +47,10 @@ function App() {
     if (csrf) {
       localStorage.setItem('bili_jct', csrf)
       setCSRF(csrf)
+    }
+    if (dedeuserid) {
+      localStorage.setItem('DeDeUserID', dedeuserid)
+      setDeDeUserID(dedeuserid)
     }
     if (mid) {
       localStorage.setItem('MID', mid)
@@ -57,6 +62,7 @@ function App() {
     localStorage.removeItem('SESSDATA')
     localStorage.removeItem('bili_jct')
     localStorage.removeItem('MID')
+    localStorage.removeItem('DeDeUserID')
     setSessdata('')
     setCSRF('')
     setMid('')
@@ -68,6 +74,7 @@ function App() {
     setFaceRecognitionAddress('')
     setStreamAddress('')
     setStreamKey('')
+    setDeDeUserID('')
   }
 
   const getLoginQRCode = async () => {
@@ -91,7 +98,7 @@ function App() {
       switch (response.data.code) {
         case 0:
           clearInterval(intervalRef.current)
-          saveCredentials(response.data.sessdata, response.data.csrf)
+          saveCredentials(response.data.sessdata, response.data.csrf, '', response.data.dedeuserid)
           setQRStatus(response.data.message)
           verifyLoginStatus(response.data.sessdata)
           break
@@ -120,7 +127,7 @@ function App() {
       if (response?.code === 0 && response.data?.isLogin) {
         setIsLoggedIn(true)
         setUsername(response.data.uname)
-        if (!mid) saveCredentials(sessdata, csrf, response.data.mid)
+        if (!mid) saveCredentials(sessdata, csrf, response.data.mid, deDeUserID)
       } else {
         throw new Error('Invalid session')
       }
@@ -140,11 +147,14 @@ function App() {
     }
   }
 
-  const handleLogout = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current)
-    setQrData(null)
-    setIsLoggedIn(false)
-    clearCredentials()
+  const handleLogout = async () => {
+    const response = await window.api.logOut({ sessdata, csrf, deDeUserID })
+    if (response.code === 0) {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+      setQrData(null)
+      setIsLoggedIn(false)
+      clearCredentials()
+    }
   }
 
   const handleAreaChange = ({ id, name }) => {

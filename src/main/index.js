@@ -12,7 +12,8 @@ import {
   StartLiveStream,
   UpdateStreamInfo,
   EndLiveStream,
-  GetRoomInfo
+  GetRoomInfo,
+  LogOut
 } from './api'
 
 function createWindow() {
@@ -111,6 +112,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('get-room-info', async (_, room_id) => {
     return await GetRoomInfo(room_id)
+  })
+
+  ipcMain.handle('log-out', async (_, { sessdata, csrf, dedeuserid }) => {
+    return await LogOut({ sessdata, csrf, dedeuserid })
   })
 
   createWindow()

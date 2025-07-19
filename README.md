@@ -52,6 +52,7 @@ $ npm run build:linux
   - [X] Get room info
   - [X] Display room info
   - [x] Display face recognition address
+  - [x] Gracefully logout
 - [ ] Working towards
   - [ ] Styling
 
