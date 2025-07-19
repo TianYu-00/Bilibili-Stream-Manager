@@ -242,7 +242,7 @@ function App() {
   return (
     <div className="flex flex-col items-start justify-start min-h-screen bg-gray-100 p-6">
       <div className="flex items-center space-x-2 w-full">
-        <div className="flex-grow flex items-center space-x-2 border border-yellow-500">
+        <div className="flex-grow flex items-center space-x-2">
           <AreaList selectedArea={selectedArea} onAreaChange={handleAreaChange} />
           <StreamTitle title={streamTitle} onTitleChange={handleStreamTitleChange} />
           <UpdateStream
