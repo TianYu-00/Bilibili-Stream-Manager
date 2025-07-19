@@ -277,7 +277,6 @@ function App() {
       </div>
 
       <TableComponent
-        qr_status={qrStatus}
         sessdata={sessdata}
         csrf={csrf}
         uid={mid}

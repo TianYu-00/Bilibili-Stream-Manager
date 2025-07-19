@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react'
 
 export default function TableComponent({
-  qr_status,
   sessdata,
   csrf,
   uid,
@@ -22,14 +21,13 @@ export default function TableComponent({
 
   const accountData = useMemo(
     () => [
-      { label: '二维码登录状态', value: qr_status, sensitive: false },
       { label: '登录状态', value: isLoggedIn ? '已登录' : '未登录', sensitive: false },
       { label: '用户ID', value: uid, sensitive: false },
       { label: '用户名', value: username, sensitive: false },
       { label: 'SESSDATA', value: sessdata, sensitive: true },
       { label: 'CSRF', value: csrf, sensitive: true }
     ],
-    [qr_status, isLoggedIn, uid, username, sessdata, csrf]
+    [isLoggedIn, uid, username, sessdata, csrf]
   )
 
   const streamData = useMemo(
