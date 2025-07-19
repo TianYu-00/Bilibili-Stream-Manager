@@ -36,7 +36,7 @@ export default function AreaList({ selectedArea, onAreaChange }) {
         }}
         placeholder="请选择分区"
         isClearable
-        className="text-sm w-64"
+        className="text-sm w-56"
       />
     </div>
   )

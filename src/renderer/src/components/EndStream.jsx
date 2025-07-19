@@ -30,6 +30,16 @@ export default function EndStream({
         setTimeout(() => setStatus('idle'), 2000)
       } else {
         console.error('End failed:', response.message || response.msg || response)
+        switch (response.code) {
+          case -400:
+            alert('没有权限')
+            break
+          case 65530:
+            alert('Token错误（登录错误）')
+            break
+          default:
+            alert('未知错误')
+        }
         setStatus('idle')
       }
     } catch (error) {
@@ -39,8 +49,8 @@ export default function EndStream({
   }
 
   const getButtonText = () => {
-    if (status === 'loading') return '正在结束直播...'
-    if (status === 'success') return '直播已结束'
+    if (status === 'loading') return '加载...'
+    if (status === 'success') return '关播成功'
     return '结束直播'
   }
 
@@ -49,7 +59,7 @@ export default function EndStream({
       <button
         onClick={handleEndClick}
         disabled={status === 'loading' || status === 'success'}
-        className="p-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm"
+        className="w-24 p-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm whitespace-nowrap truncate"
       >
         {getButtonText()}
       </button>

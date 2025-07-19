@@ -250,14 +250,14 @@ function App() {
             <button
               onClick={getLoginQRCode}
               disabled={loading}
-              className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 text-sm"
+              className="w-24 p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 text-sm whitespace-nowrap truncate"
             >
               {loading ? 'Loading...' : '二维码登录'}
             </button>
           ) : (
             <button
               onClick={handleLogout}
-              className="p-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm"
+              className="w-24 p-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm whitespace-nowrap truncate"
             >
               退出登录
             </button>

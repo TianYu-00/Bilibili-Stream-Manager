@@ -27,9 +27,10 @@ function createWindow() {
   // console.log(iconPath, process.platform)
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 980,
+    width: 1050,
     height: 750,
-    minWidth: 980,
+    minWidth: 1050,
+    minHeight: 120,
     icon: iconPath,
     show: false,
     autoHideMenuBar: true,
