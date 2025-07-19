@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+
 import {
   GetLoginQRCode,
   PollLoginStatus,
@@ -15,14 +16,23 @@ import {
 } from './api'
 
 function createWindow() {
+  let iconPath = null
+  if (process.platform === 'win32') {
+    iconPath = join(__dirname, '../../resources/icons/bilibili_logo_icon.ico')
+  } else if (process.platform === 'darwin') {
+    iconPath = join(__dirname, '../../resources/icons/bilibili_logo_icon.icns')
+  } else if (process.platform === 'linux') {
+    iconPath = join(__dirname, '../../resources/icons/bilibili_logo_icon.png')
+  }
+  // console.log(iconPath, process.platform)
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1000,
+    width: 980,
     height: 750,
-    resizable: false,
+    minWidth: 980,
+    icon: iconPath,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false

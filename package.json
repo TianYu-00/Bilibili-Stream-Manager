@@ -1,10 +1,10 @@
 {
   "name": "bilibili-stream-manager",
   "version": "1.0.0",
-  "description": "An Electron application with React",
+  "description": "Bilibili stream manager",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "tianyu00.com",
+  "homepage": "https://tianyu00.com",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
@@ -14,8 +14,25 @@
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
+    "build:win-p": "npm run build && electron-builder --win=portable",
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.tianyu00.bilibili-stream-manager",
+    "productName": "Bilibili Stream Manager",
+    "directories": {
+      "buildResources": "resources"
+    },
+    "win": {
+      "icon": "resources/icons/bilibili_logo_icon.ico"
+    },
+    "mac": {
+      "icon": "resources/icons/bilibili_logo_icon.icns"
+    },
+    "linux": {
+      "icon": "resources/icons/bilibili_logo_icon.png"
+    }
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
