@@ -6,9 +6,11 @@ import StartStream from './components/StartStream'
 import UpdateStream from './components/UpdateStream'
 import EndStream from './components/EndStream'
 import TableComponent from './components/TableComponent'
+import CreatableSelect from 'react-select/creatable'
 
 function App() {
   const [qrData, setQrData] = useState(null)
+  const [qrExpirationCoolDown, setQRExpirationCoolDown] = useState(0)
   const [showQRModal, setShowQRModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -95,22 +97,23 @@ function App() {
   const pollLogin = async (qrcodeKey) => {
     try {
       const response = await window.api.pollLoginStatus(qrcodeKey)
+      console.log(response)
 
       switch (response.data.code) {
-        case 0:
+        case 0: // 0：扫码登录成功
           clearInterval(intervalRef.current)
           saveCredentials(response.data.sessdata, response.data.csrf, '', response.data.dedeuserid)
           setQRStatus(response.data.message)
           verifyLoginStatus(response.data.sessdata)
           break
-        case 86038:
+        case 86038: // 86038：二维码已失效
           clearInterval(intervalRef.current)
           setQRStatus(response.data.message)
           break
-        case 86090:
+        case 86090: // 86090：二维码已扫码未确认
           setQRStatus(response.data.message)
           break
-        case 86101:
+        case 86101: // 86101：未扫码
           setQRStatus(response.data.message)
           break
         default:
@@ -205,6 +208,7 @@ function App() {
   // Poll QR login
   useEffect(() => {
     if (!qrData?.data?.qrcode_key || isLoggedIn) return
+    pollLogin(qrData.data.qrcode_key) // immediate poll
     intervalRef.current = setInterval(() => pollLogin(qrData.data.qrcode_key), 2000) // poll every 2 seconds
     return () => clearInterval(intervalRef.current)
   }, [qrData, isLoggedIn])
@@ -218,10 +222,27 @@ function App() {
     if (roomId) getRoomInfo(roomId)
   }, [roomId])
 
+  useEffect(() => {
+    let timer
+    if (showQRModal) {
+      setQRExpirationCoolDown(180) // Reset cooldown on modal open
+      timer = setInterval(() => {
+        setQRExpirationCoolDown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer)
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    }
+    return () => clearInterval(timer)
+  }, [showQRModal])
+
   return (
     <div className="flex flex-col items-start justify-start min-h-screen bg-gray-100 p-6">
       <div className="flex items-center space-x-2 w-full">
-        <div className="flex-grow flex items-center space-x-2">
+        <div className="flex-grow flex items-center space-x-2 border border-yellow-500">
           <AreaList selectedArea={selectedArea} onAreaChange={handleAreaChange} />
           <StreamTitle title={streamTitle} onTitleChange={handleStreamTitleChange} />
           <UpdateStream
@@ -298,6 +319,14 @@ function App() {
           <div className="bg-white p-6 rounded shadow-xl text-center">
             <h2 className="text-lg mb-4 font-medium">扫码登录</h2>
             <QRCode value={qrData.data.url} size={256} />
+            {qrExpirationCoolDown > 0 && (
+              <>
+                <p className="text-sm mt-2 text-gray-600">
+                  二维码可能将在 {qrExpirationCoolDown} 秒后过期
+                </p>
+              </>
+            )}
+
             <p className="text-sm mt-2">{qrStatus}</p>
             <button
               onClick={() => setShowQRModal(false)}
