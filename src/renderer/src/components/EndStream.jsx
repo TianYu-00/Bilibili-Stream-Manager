@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { toast } from 'react-toastify'
 
 export default function EndStream({
@@ -8,27 +8,22 @@ export default function EndStream({
   csrf,
   setStreamAddress,
   setStreamKey,
-  setLiveStreamStatus
+  setLiveStreamStatus,
+  liveStreamStatus
 }) {
-  const [status, setStatus] = useState('idle') // idle | loading | success
-
   const handleEndClick = async () => {
     if (!room_id || !platform || !sessdata || !csrf) {
       toast.error('缺少必要的参数，无法结束直播')
       return
     }
 
-    setStatus('loading')
-
     try {
       const response = await window.api.endLiveStream({ room_id, platform, sessdata, csrf })
       if (response.code === 0) {
-        setStatus('success')
         setStreamAddress('')
         setStreamKey('')
         setLiveStreamStatus('未开播')
         toast.success('关播成功')
-        setTimeout(() => setStatus('idle'), 2000)
       } else {
         switch (response.code) {
           case -400:
@@ -40,28 +35,24 @@ export default function EndStream({
           default:
             toast.error('未知错误')
         }
-        setStatus('idle')
       }
     } catch (error) {
       toast.error(error)
-      setStatus('idle')
     }
   }
 
-  const getButtonText = () => {
-    if (status === 'loading') return '加载...'
-    if (status === 'success') return '关播成功'
-    return '结束直播'
-  }
+  useEffect(() => {
+    console.log(liveStreamStatus)
+  }, [liveStreamStatus])
 
   return (
     <div>
       <button
         onClick={handleEndClick}
-        disabled={status === 'loading' || status === 'success'}
+        disabled={liveStreamStatus !== '直播中'}
         className="w-24 p-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm whitespace-nowrap truncate"
       >
-        {getButtonText()}
+        结束直播
       </button>
     </div>
   )

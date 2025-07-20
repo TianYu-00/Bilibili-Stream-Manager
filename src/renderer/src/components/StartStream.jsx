@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { toast } from 'react-toastify'
 
 export default function StartStream({
@@ -11,10 +11,9 @@ export default function StartStream({
   setStreamKey,
   setLiveStreamStatus,
   setFaceRecognitionAddress,
-  setShowFaceQRModal
+  setShowFaceQRModal,
+  liveStreamStatus
 }) {
-  const [status, setStatus] = useState('idle') // idle | loading | success
-
   const getZBJVerionInfo = async () => {
     try {
       const response = await window.api.zbjVersionInfo()
@@ -25,13 +24,10 @@ export default function StartStream({
   }
 
   const handleStartClick = async () => {
-    // Validate required parameters
     if (!room_id || !area_v2 || !platform || !sessdata || !csrf) {
       toast.error('缺少必要的参数，无法开始直播')
       return
     }
-
-    setStatus('loading')
 
     try {
       const zbjVersionInfo = await getZBJVerionInfo()
@@ -47,12 +43,10 @@ export default function StartStream({
       })
 
       if (response.code === 0) {
-        setStatus('success')
         setStreamAddress(response.data?.rtmp?.addr)
         setStreamKey(response.data?.rtmp?.code)
         setLiveStreamStatus('直播中')
         toast.success('开播成功')
-        setTimeout(() => setStatus('idle'), 2000)
       } else {
         switch (response.code) {
           case 1:
@@ -81,28 +75,24 @@ export default function StartStream({
           default:
             toast.error('未知错误')
         }
-        setStatus('idle')
       }
     } catch (error) {
       toast.error(error)
-      setStatus('idle')
     }
   }
 
-  const getButtonText = () => {
-    if (status === 'loading') return '加载...'
-    if (status === 'success') return '开播成功'
-    return '开始直播'
-  }
+  useEffect(() => {
+    console.log(liveStreamStatus)
+  }, [liveStreamStatus])
 
   return (
     <div>
       <button
         onClick={handleStartClick}
-        disabled={status === 'loading' || status === 'success'}
+        disabled={liveStreamStatus !== '未开播'}
         className="w-24 p-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 text-sm whitespace-nowrap truncate"
       >
-        {getButtonText()}
+        开始直播
       </button>
     </div>
   )

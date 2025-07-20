@@ -265,6 +265,7 @@ function App() {
             setLiveStreamStatus={setLiveStreamStatus}
             setFaceRecognitionAddress={setFaceRecognitionAddress}
             setShowFaceQRModal={setShowFaceQRModal}
+            liveStreamStatus={liveStreamStatus}
           />
           <EndStream
             room_id={roomId}
@@ -274,6 +275,7 @@ function App() {
             setStreamAddress={setStreamAddress}
             setStreamKey={setStreamKey}
             setLiveStreamStatus={setLiveStreamStatus}
+            liveStreamStatus={liveStreamStatus}
           />
         </div>
 
