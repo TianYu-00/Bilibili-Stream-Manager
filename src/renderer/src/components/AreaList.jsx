@@ -36,7 +36,7 @@ export default function AreaList({ selectedArea, onAreaChange }) {
             onAreaChange(selected ? selected.value : null)
           }}
           placeholder="请选择分区"
-          isClearable
+          // isClearable
           className="text-sm w-full"
           styles={{
             input: (base) => ({
