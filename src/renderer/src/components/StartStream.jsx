@@ -10,7 +10,8 @@ export default function StartStream({
   setStreamAddress,
   setStreamKey,
   setLiveStreamStatus,
-  setFaceRecognitionAddress
+  setFaceRecognitionAddress,
+  setShowFaceQRModal
 }) {
   const [status, setStatus] = useState('idle') // idle | loading | success
 
@@ -46,11 +47,12 @@ export default function StartStream({
             toast.error('错误')
             break
           case 60037:
-            toast.error('web 在线开播已下线')
+            toast.error('Web 在线开播已下线')
             break
           case 60024:
             setFaceRecognitionAddress(response.data?.qr)
-            toast.error('请复制人脸识别地址用手机验证后才能开播') // NOTE: Implement qr code scan
+            setShowFaceQRModal(true)
+            toast.error('目标分区需要人脸认证')
             break
           case 60013:
             toast.error('非常抱歉，您所在的地区受实名认证限制无法开播')

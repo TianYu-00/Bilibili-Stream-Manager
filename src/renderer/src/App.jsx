@@ -6,11 +6,13 @@ import StartStream from './components/StartStream'
 import UpdateStream from './components/UpdateStream'
 import EndStream from './components/EndStream'
 import TableComponent from './components/TableComponent'
+import CustomModal from './components/CustomModal'
 
 function App() {
   const [qrData, setQrData] = useState(null)
   const [qrExpirationCoolDown, setQRExpirationCoolDown] = useState(0)
   const [showQRModal, setShowQRModal] = useState(false)
+  const [showFaceQRModal, setShowFaceQRModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [roomId, setRoomId] = useState(null)
@@ -264,6 +266,7 @@ function App() {
             setStreamKey={setStreamKey}
             setLiveStreamStatus={setLiveStreamStatus}
             setFaceRecognitionAddress={setFaceRecognitionAddress}
+            setShowFaceQRModal={setShowFaceQRModal}
           />
           <EndStream
             room_id={roomId}
@@ -310,34 +313,45 @@ function App() {
         stream_address={streamAddress}
         stream_key={streamKey}
         live_status={liveStreamStatus}
-        faceRecognitionAddress={faceRecognitionAddress}
       />
 
       {showQRModal && qrData?.data?.url && !isLoggedIn && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow-xl text-center">
-            <h2 className="text-lg mb-4 font-medium">扫码登录</h2>
+        <CustomModal isOpen={showQRModal} onClose={() => setShowQRModal(false)} title="扫码登录">
+          <div className="flex justify-center">
             <QRCode value={qrData.data.url} size={256} />
-            {qrExpirationCoolDown > 0 && (
-              <>
-                <p className="text-sm mt-2 text-gray-600">
-                  二维码可能将在 {qrExpirationCoolDown} 秒后过期
-                </p>
-              </>
-            )}
-
-            <p className="text-sm mt-2">{qrStatus}</p>
-            <button
-              onClick={() => setShowQRModal(false)}
-              className="mt-4 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-            >
-              关闭
-            </button>
           </div>
-        </div>
+          <p className="text-xs mt-2 text-gray-600">{qrData.data.url}</p>
+          {qrExpirationCoolDown > 0 && (
+            <p className="text-sm mt-4 text-gray-600">
+              二维码可能将在 {qrExpirationCoolDown} 秒后过期
+            </p>
+          )}
+          <p className="text-sm mt-2">{qrStatus}</p>
+        </CustomModal>
       )}
 
-      {/* <QRCode value={faceRecognitionAddress} size={256} /> */}
+      {showFaceQRModal && faceRecognitionAddress && isLoggedIn && (
+        <CustomModal
+          isOpen={showFaceQRModal}
+          onClose={() => setShowFaceQRModal(false)}
+          title="人脸识别验证"
+        >
+          <div className="flex justify-center">
+            <QRCode value={faceRecognitionAddress} size={256} />
+          </div>
+          <p className="text-xs mt-2 text-gray-600">{faceRecognitionAddress}</p>
+
+          <a
+            href="https://www.bilibili.com/blackboard/activity-msK3lx0JRp.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm mt-4 text-blue-500 inline-block"
+          >
+            人脸识别服务协议
+          </a>
+          <span></span>
+        </CustomModal>
+      )}
     </div>
   )
 }

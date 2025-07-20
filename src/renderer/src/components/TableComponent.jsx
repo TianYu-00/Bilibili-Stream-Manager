@@ -13,8 +13,7 @@ export default function TableComponent({
   platform,
   stream_address,
   stream_key,
-  live_status,
-  faceRecognitionAddress
+  live_status
 }) {
   const [copiedLabels, setCopiedLabels] = useState({})
   const timeoutRefs = useRef({}) // to store timeouts per label
@@ -39,20 +38,9 @@ export default function TableComponent({
       { label: '分区ID', value: area_id, sensitive: false },
       { label: '平台', value: platform, sensitive: false },
       { label: '推流地址', value: stream_address, sensitive: true },
-      { label: '推流码', value: stream_key, sensitive: true },
-      { label: '人脸识别地址', value: faceRecognitionAddress, sensitive: true }
+      { label: '推流码', value: stream_key, sensitive: true }
     ],
-    [
-      live_status,
-      room_id,
-      title,
-      area_name,
-      area_id,
-      platform,
-      stream_address,
-      stream_key,
-      faceRecognitionAddress
-    ]
+    [live_status, room_id, title, area_name, area_id, platform, stream_address, stream_key]
   )
 
   const initialVisibility = useMemo(() => {
