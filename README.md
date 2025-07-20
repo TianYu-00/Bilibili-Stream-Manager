@@ -1,61 +1,41 @@
-# bilibili-stream-manager
+<div align="center">
+<h1> 哔哩直播管理器 </h1> 
+哔哩直播管理器 是一款简洁极简，操作简单的直播辅助工具。它拥有友好的用户界面，支持二维码登录，直播分区和直播标题设置，使用方便快捷。开播时自动提供推流地址和推流码，支持一键复制，方便在 OBS 或其他第三方直播软件中使用。
+<br><br>
 
-An Electron application with React
+[![madewithlove](https://img.shields.io/badge/made_with-❤-red?style=for-the-badge&labelColor=orange
+)](https://github.com/Tianyu-00)
 
-## Recommended IDE Setup
+[快速开始]() | [免责声明]() | [参考资料]()
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+![gif]()
+</div>
 
-## Project Setup
-
-### Install
-
+## 快速开始
+### 安装
 ```bash
-$ npm install
+npm install
 ```
 
-### Development
-
+### 运行
 ```bash
-$ npm run dev
+npm run dev
 ```
 
-### Build
-
+### 构建
 ```bash
-# For windows
-$ npm run build:win
+# Windows 系统
+npm run build:win-p
 
-# For macOS
-$ npm run build:mac
+# macOS 系统
+npm run build:mac
 
-# For Linux
-$ npm run build:linux
+# Linux 系统
+npm run build:linux
 ```
 
-### TO DO LIST
-- [ ] Done
-  - [x] Generate QR Code
-  - [x] QR Code Login
-  - [x] Verify Login State
-  - [x] Get room id
-  - [x] Get area list
-  - [x] Allow user to pick the area list
-  - [x] Stream title input
-  - [x] Update Stream
-  - [x] Start stream
-  - [x] Generate stream server
-  - [x] Generate stream key
-  - [x] End stream
-  - [x] Get stream address
-  - [x] Get stream key
-  - [X] Get room info
-  - [X] Display room info
-  - [x] Display face recognition address
-  - [x] Gracefully logout
-- [ ] Working towards
-  - [ ] Styling
+## 免责声明
+本软件仅作为哔哩哔哩直播的辅助工具，旨在提升用户的直播体验。使用本软件过程中产生的任何风险及后果，由用户自行承担。开发者不对因使用本软件而导致的任何直接或间接损失承担责任。请确保您的操作符合哔哩哔哩平台相关规定及法律法规。
 
-
-### Reference
+## 参考资料
 [Bilibili API Collect Documentation](https://socialsisteryi.github.io/bilibili-API-collect/)
