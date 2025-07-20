@@ -6,9 +6,9 @@
 [![madewithlove](https://img.shields.io/badge/made_with-❤-red?style=for-the-badge&labelColor=orange
 )](https://github.com/Tianyu-00)
 
-[快速开始]() | [免责声明]() | [参考资料]()
+[快速开始](https://github.com/TianYu-00/Bilibili-Stream-Manager/edit/main/README.md#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B) | [免责声明](https://github.com/TianYu-00/Bilibili-Stream-Manager/edit/main/README.md#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B) | [参考资料](https://github.com/TianYu-00/Bilibili-Stream-Manager/edit/main/README.md#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99)
 
-![gif]()
+![gif](https://github.com/user-attachments/assets/724ac9b5-aa76-444f-a211-3ea4ac292acd)
 </div>
 
 ## 快速开始
