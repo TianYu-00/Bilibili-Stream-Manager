@@ -22,7 +22,7 @@ export default function EndStream({
 
     try {
       const response = await window.api.endLiveStream({ room_id, platform, sessdata, csrf })
-      console.log(response)
+      // console.log(response)
       if (response.code === 0) {
         setStatus('success')
         setStreamAddress('')

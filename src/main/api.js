@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { AppSign } from './appsign'
 /*
 Generate Login QR Code:
 https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/login/login_action/QR.md#web%E7%AB%AF%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95
@@ -29,6 +30,12 @@ https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/inf
 
 Logout
 https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/login/exit.md#%E9%80%80%E5%87%BA%E7%99%BB%E5%BD%95web%E7%AB%AF
+
+Signing
+https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/sign/APP.html#app-api-%E7%AD%BE%E5%90%8D%E7%89%B9%E6%80%A7
+
+APPKey list
+https://socialsisteryi.github.io/bilibili-API-collect/docs/misc/sign/APPKey.html
 */
 
 // Get Login QR Code
@@ -161,15 +168,64 @@ export async function UpdateStreamInfo({ room_id, title, area_id, sessdata, csrf
   }
 }
 
-export async function StartLiveStream({ room_id, area_v2, platform, sessdata, csrf }) {
+export async function ZBJVersionInfo() {
   try {
-    const formBody = new URLSearchParams({
+    const response = await axios.get(
+      `https://api.live.bilibili.com/xlive/app-blink/v1/liveVersionInfo/getHomePageLiveVersion`,
+      {
+        params: {
+          system_version: 2,
+          appKey: 'aae92bc66f3edfab',
+          ts: '',
+          sign: ''
+        }
+      }
+    )
+
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export async function StartLiveStream({
+  room_id,
+  area_v2,
+  platform,
+  sessdata,
+  csrf,
+  zbj_version,
+  zbj_build
+}) {
+  try {
+    /*
+      NOTE: 20/07/2025 - Keeping just `room_id` `area_v2` `platform` `csrf` `build` in the formbody could already bypass face recognition.
+            However, to make it more future proof its better to add `version` `ts` `appkey` and then sign it with {params, appkey, appsec} to get `sign` param
+            params for signing include: `room_id` `area_v2` `platform` `csrf` `build` `version` `ts` `appkey`
+            final params include: `room_id` `area_v2` `platform` `csrf` `build` `version` `ts` `appkey` `sign`
+    */
+
+    const currentTime = Math.floor(Date.now() / 1000)
+    const appkey = 'aae92bc66f3edfab' // PC 投稿工具/直播姬 appkey
+    const appsec = 'af125a0d5279fd576c1b4418a3e8276d' // PC 投稿工具/直播姬 appsec
+
+    const params = {
       room_id, // room id
       area_v2, // area child id
       platform, // pc_link or android_link // web_link (deprecated)
-      csrf // bili_jct
-    }).toString()
+      csrf, // bili_jct
+      version: zbj_version, // 直播姬 version
+      build: zbj_build, // 直播姬 build
+      ts: currentTime.toString(), // current unix timestamp
+      appkey // appkey
+    }
 
+    const sign = AppSign(params, appkey, appsec)
+    params.sign = sign
+
+    const formBody = new URLSearchParams(params).toString()
+    // console.log(formBody)
     const response = await axios.post(
       'https://api.live.bilibili.com/room/v1/Room/startLive',
       formBody,

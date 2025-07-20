@@ -16,8 +16,18 @@ const api = {
   updateStreamInfo: ({ room_id, title, area_id, sessdata, csrf }) =>
     ipcRenderer.invoke('update-stream-info', { room_id, title, area_id, sessdata, csrf }),
 
-  startLiveStream: ({ room_id, area_v2, platform, sessdata, csrf }) =>
-    ipcRenderer.invoke('start-live-stream', { room_id, area_v2, platform, sessdata, csrf }),
+  zbjVersionInfo: () => ipcRenderer.invoke('zbj-version-info'),
+
+  startLiveStream: ({ room_id, area_v2, platform, sessdata, csrf, zbj_version, zbj_build }) =>
+    ipcRenderer.invoke('start-live-stream', {
+      room_id,
+      area_v2,
+      platform,
+      sessdata,
+      csrf,
+      zbj_version,
+      zbj_build
+    }),
 
   endLiveStream: ({ room_id, platform, sessdata, csrf }) =>
     ipcRenderer.invoke('end-live-stream', { room_id, platform, sessdata, csrf }),

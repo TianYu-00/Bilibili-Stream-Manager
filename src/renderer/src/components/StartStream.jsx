@@ -15,6 +15,16 @@ export default function StartStream({
 }) {
   const [status, setStatus] = useState('idle') // idle | loading | success
 
+  const getZBJVerionInfo = async () => {
+    try {
+      const response = await window.api.zbjVersionInfo()
+      console.log(response.data)
+      return response.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const handleStartClick = async () => {
     // Validate required parameters
     if (!room_id || !area_v2 || !platform || !sessdata || !csrf) {
@@ -25,12 +35,18 @@ export default function StartStream({
     setStatus('loading')
 
     try {
+      const zbjVersionInfo = await getZBJVerionInfo()
+
+      // console.log(zbjVersionInfo)
+
       const response = await window.api.startLiveStream({
         room_id,
         area_v2,
         platform,
         sessdata,
-        csrf
+        csrf,
+        zbj_version: zbjVersionInfo.curr_version,
+        zbj_build: zbjVersionInfo.build
       })
 
       if (response.code === 0) {
@@ -41,7 +57,7 @@ export default function StartStream({
         toast.success('开播成功')
         setTimeout(() => setStatus('idle'), 2000)
       } else {
-        console.error('Start failed:', response.message || response.msg || response)
+        console.error('Start failed:', response)
         switch (response.code) {
           case 1:
             toast.error('错误')
@@ -62,6 +78,9 @@ export default function StartStream({
             break
           case 65530:
             toast.error('Token错误（登录错误）')
+            break
+          case -400:
+            toast.error('请求错误')
             break
           default:
             toast.error('未知错误')

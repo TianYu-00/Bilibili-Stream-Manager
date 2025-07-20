@@ -9,6 +9,7 @@ import {
   VerifyLogin,
   GetRoomIdByUID,
   GetAreaList,
+  ZBJVersionInfo,
   StartLiveStream,
   UpdateStreamInfo,
   EndLiveStream,
@@ -102,9 +103,20 @@ app.whenReady().then(() => {
     return await UpdateStreamInfo({ room_id, title, area_id, sessdata, csrf })
   })
 
-  ipcMain.handle('start-live-stream', async (_, { room_id, area_v2, platform, sessdata, csrf }) => {
-    return await StartLiveStream({ room_id, area_v2, platform, sessdata, csrf })
-  })
+  ipcMain.handle(
+    'start-live-stream',
+    async (_, { room_id, area_v2, platform, sessdata, csrf, zbj_version, zbj_build }) => {
+      return await StartLiveStream({
+        room_id,
+        area_v2,
+        platform,
+        sessdata,
+        csrf,
+        zbj_version,
+        zbj_build
+      })
+    }
+  )
 
   ipcMain.handle('end-live-stream', async (_, { room_id, platform, sessdata, csrf }) => {
     return await EndLiveStream({ room_id, platform, sessdata, csrf })
@@ -116,6 +128,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('log-out', async (_, { sessdata, csrf, dedeuserid }) => {
     return await LogOut({ sessdata, csrf, dedeuserid })
+  })
+
+  ipcMain.handle('zbj-version-info', async () => {
+    return await ZBJVersionInfo()
   })
 
   createWindow()
