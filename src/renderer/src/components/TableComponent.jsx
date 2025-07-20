@@ -78,7 +78,7 @@ export default function TableComponent({
         delete timeoutRefs.current[label]
       }, 1000)
     } catch (error) {
-      console.error(error)
+      toast.error(error)
     }
   }
 

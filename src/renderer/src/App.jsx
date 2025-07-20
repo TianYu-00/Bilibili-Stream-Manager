@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { toast } from 'react-toastify'
 import QRCode from 'react-qr-code'
 import AreaList from './components/AreaList'
 import StreamTitle from './components/StreamTitle'
@@ -89,7 +90,7 @@ function App() {
       setQRStatus('')
       setShowQRModal(true)
     } catch (error) {
-      console.error(error)
+      toast.error(error)
     } finally {
       setLoading(false)
     }
@@ -98,7 +99,6 @@ function App() {
   const pollLogin = async (qrcodeKey) => {
     try {
       const response = await window.api.pollLoginStatus(qrcodeKey)
-      console.log(response)
 
       switch (response.data.code) {
         case 0: // 0：扫码登录成功
@@ -121,7 +121,7 @@ function App() {
           setQRStatus(response.data.message)
       }
     } catch (error) {
-      console.error(error)
+      toast.error(error)
       clearInterval(intervalRef.current)
     }
   }
@@ -137,7 +137,7 @@ function App() {
         throw new Error('Invalid session')
       }
     } catch (error) {
-      console.error(error)
+      toast.error(error)
       setIsLoggedIn(false)
       clearCredentials()
     }
@@ -148,7 +148,7 @@ function App() {
       const response = await window.api.getRoomIdByUID(uid)
       setRoomId(response.data.room_id)
     } catch (error) {
-      console.error(error)
+      toast.error(error)
     }
   }
 
@@ -164,7 +164,6 @@ function App() {
 
   const handleAreaChange = ({ id, name }) => {
     const area = { id, name }
-    console.log(area)
     setSelectedArea(area)
     localStorage.setItem('SELECTED_AREA', JSON.stringify(area))
   }
@@ -177,7 +176,6 @@ function App() {
   const getRoomInfo = async (room_id) => {
     try {
       const response = await window.api.getRoomInfo(room_id)
-      // console.log(response.data)
       setLiveStreamArea({ id: response.data.area_id, name: response.data.area_name })
       setLiveStreamTitle(response.data.title)
 
@@ -195,7 +193,7 @@ function App() {
           setLiveStreamStatus('未知')
       }
     } catch (error) {
-      console.error(error)
+      toast.error(error)
     }
   }
 

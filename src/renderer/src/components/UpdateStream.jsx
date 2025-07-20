@@ -25,8 +25,6 @@ export default function UpdateStream({
         csrf
       })
 
-      console.log(response.data)
-
       if (response.code === 0) {
         setStatus('success')
         setLiveStreamArea({ id: area_id, name: area_name })
@@ -34,7 +32,6 @@ export default function UpdateStream({
         toast.success('更新成功')
         setTimeout(() => setStatus('idle'), 2000)
       } else {
-        console.error('Update failed:', response.msg || response)
         switch (response.code) {
           case -1:
             toast.error('操作太频繁')
@@ -61,7 +58,7 @@ export default function UpdateStream({
         setStatus('idle')
       }
     } catch (error) {
-      console.error(error)
+      toast.error(error)
       setStatus('idle')
     }
   }

@@ -16,7 +16,7 @@ export default function AreaList({ selectedArea, onAreaChange }) {
         )
         setAreaOptions(formatted)
       } catch (error) {
-        console.error(error)
+        toast.error(error)
       }
     }
 

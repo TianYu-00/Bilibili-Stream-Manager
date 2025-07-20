@@ -22,7 +22,6 @@ export default function EndStream({
 
     try {
       const response = await window.api.endLiveStream({ room_id, platform, sessdata, csrf })
-      // console.log(response)
       if (response.code === 0) {
         setStatus('success')
         setStreamAddress('')
@@ -31,7 +30,6 @@ export default function EndStream({
         toast.success('关播成功')
         setTimeout(() => setStatus('idle'), 2000)
       } else {
-        console.error('End failed:', response.message || response.msg || response)
         switch (response.code) {
           case -400:
             toast.error('没有权限')
@@ -45,7 +43,7 @@ export default function EndStream({
         setStatus('idle')
       }
     } catch (error) {
-      console.error(error)
+      toast.error(error)
       setStatus('idle')
     }
   }

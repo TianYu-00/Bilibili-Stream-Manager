@@ -18,10 +18,9 @@ export default function StartStream({
   const getZBJVerionInfo = async () => {
     try {
       const response = await window.api.zbjVersionInfo()
-      console.log(response.data)
       return response.data
     } catch (error) {
-      console.error(error)
+      toast.error(error)
     }
   }
 
@@ -36,8 +35,6 @@ export default function StartStream({
 
     try {
       const zbjVersionInfo = await getZBJVerionInfo()
-
-      // console.log(zbjVersionInfo)
 
       const response = await window.api.startLiveStream({
         room_id,
@@ -57,7 +54,6 @@ export default function StartStream({
         toast.success('开播成功')
         setTimeout(() => setStatus('idle'), 2000)
       } else {
-        console.error('Start failed:', response)
         switch (response.code) {
           case 1:
             toast.error('错误')
@@ -88,7 +84,7 @@ export default function StartStream({
         setStatus('idle')
       }
     } catch (error) {
-      console.error(error)
+      toast.error(error)
       setStatus('idle')
     }
   }
