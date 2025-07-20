@@ -18,9 +18,18 @@ export default function TableComponent({
   const [copiedLabels, setCopiedLabels] = useState({})
   const timeoutRefs = useRef({}) // to store timeouts per label
 
+  const stream = useMemo(
+    () => [
+      { label: '推流地址', value: stream_address, sensitive: true },
+      { label: '推流码', value: stream_key, sensitive: true }
+    ],
+    [stream_address, stream_key]
+  )
+
   const accountData = useMemo(
     () => [
       { label: '登录状态', value: isLoggedIn ? '已登录' : '未登录', sensitive: false },
+      { label: '用户主页', value: `https://space.bilibili.com/${uid}`, sensitive: false },
       { label: '用户ID', value: uid, sensitive: false },
       { label: '用户名', value: username, sensitive: false },
       { label: 'SESSDATA', value: sessdata, sensitive: true },
@@ -32,24 +41,23 @@ export default function TableComponent({
   const streamData = useMemo(
     () => [
       { label: '直播间状态', value: live_status, sensitive: false },
+      { label: '直播间链接', value: `http://live.bilibili.com/${room_id}`, sensitive: false },
       { label: '直播间ID', value: room_id, sensitive: false },
       { label: '直播间标题', value: title, sensitive: false },
       { label: '分区名字', value: area_name, sensitive: false },
       { label: '分区ID', value: area_id, sensitive: false },
-      { label: '平台', value: platform, sensitive: false },
-      { label: '推流地址', value: stream_address, sensitive: true },
-      { label: '推流码', value: stream_key, sensitive: true }
+      { label: '平台', value: platform, sensitive: false }
     ],
-    [live_status, room_id, title, area_name, area_id, platform, stream_address, stream_key]
+    [live_status, room_id, title, area_name, area_id, platform]
   )
 
   const initialVisibility = useMemo(() => {
     const visibilityState = {}
-    ;[...accountData, ...streamData].forEach(({ label, sensitive }) => {
+    ;[...stream, ...accountData, ...streamData].forEach(({ label, sensitive }) => {
       visibilityState[label] = !sensitive
     })
     return visibilityState
-  }, [accountData, streamData])
+  }, [stream, accountData, streamData])
 
   const [visibility, setVisibility] = useState(initialVisibility)
 
@@ -128,6 +136,7 @@ export default function TableComponent({
 
   return (
     <div className="w-full">
+      {live_status === '直播中' && renderTable(stream, '推流信息')}
       {renderTable(accountData, '账号信息')}
       {renderTable(streamData, '直播信息')}
     </div>
