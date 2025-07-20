@@ -3,6 +3,7 @@ import CreatableSelect from 'react-select/creatable'
 
 export default function StreamTitle({ title, onTitleChange }) {
   const [options, setOptions] = useState([])
+  const [historyLimit, setHistoryLimit] = useState(10)
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('titleHistory') || '[]')
@@ -17,7 +18,7 @@ export default function StreamTitle({ title, onTitleChange }) {
 
     setOptions((prev) => {
       const titles = [newTitle, ...prev.map((o) => o.value)]
-      const uniqueTitles = [...new Set(titles)].slice(0, 10)
+      const uniqueTitles = [...new Set(titles)].slice(0, historyLimit)
       const newOptions = uniqueTitles.map((t) => ({ label: t, value: t }))
       localStorage.setItem('titleHistory', JSON.stringify(uniqueTitles))
       return newOptions
@@ -37,7 +38,7 @@ export default function StreamTitle({ title, onTitleChange }) {
           onChange={handleChange}
           options={options}
           placeholder="输入直播间标题"
-          isClearable
+          // isClearable
           className="text-sm w-full"
           formatCreateLabel={(inputValue) => `新增 "${inputValue}"`}
           styles={{
